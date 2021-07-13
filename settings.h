@@ -17,5 +17,8 @@ int *array;
 int *globalArray;
 int size;
 int arraySize;
+int defaultSize = 100;
+
+double global_elapsed_time;
 
 #endif

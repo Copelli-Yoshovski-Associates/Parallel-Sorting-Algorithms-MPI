@@ -246,7 +246,7 @@ void bitonic::start()
     {
         timer_end = MPI_Wtime();
 
-        printf("Displaying sorted array (only %d elements for quick verification)\n", OUTPUT_NUM);
+        printf("Displaying sorted array (only %d out of %d elements for quick verification)\n", OUTPUT_NUM, size);
 
         // Print Sorting Results
         for (i = 0; i < arraySize; i++)

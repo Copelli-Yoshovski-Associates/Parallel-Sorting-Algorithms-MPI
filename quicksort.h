@@ -1,30 +1,23 @@
 #ifndef QUICKSORT_H
 #define QUICKSORT_H
 #include "settings.h"
-
+#include <climits>
 class quicksort
 {
 private:
-    int *A;
-    int local_size;
+    int *A = NULL;
+    int local_size = size / num_processes;
 
 public:
-    quicksort()
-    {
-        local_size = size / num_processes; //assuming size%comm_sz == 0
-    }
+    quicksort() {}
     /*
 	getRandomArray(array, size)
 	fill array with random integers in the range from 0 to RAND_MAX
 */
-    void getRandomArray(int *array, int size)
+    void getRandomArray(int *arr, int s)
     {
-        int i = 0;
-        while (i < size)
-        {
-            array[i] = rand() % RAND_MAX;
-            i++;
-        }
+        for (int i = 0; i < s; i++)
+            arr[i] = rand() % RAND_MAX;
     }
 
     /*
@@ -32,18 +25,18 @@ public:
 	merge two arrays with the same size into array
 	in a ascending order
 */
-    void merge(int *array1, int *array2, int *merged_array, int size)
+    void merge(int *array1, int *array2, int *merged_array, int s)
     {
         int i = 0, j = 0, k = 0;
-        while (i < size / 2 && j < size / 2)
+        while (i < s / 2 && j < s / 2)
         {
             merged_array[k++] = array1[i] < array2[j] ? array1[i++] : array2[j++];
         }
-        while (i < size / 2)
+        while (i < s / 2)
         {
             merged_array[k++] = array1[i++];
         }
-        while (j < size / 2)
+        while (j < s / 2)
         {
             merged_array[k++] = array2[j++];
         }
@@ -54,22 +47,22 @@ public:
 	divide the array into two parts (elements <= pivot and elements > pivot)
 	obtained from AUCSC 310 lecture slides
 */
-    int partition(int *array, int start, int end)
+    int partition(int *arr, int start, int end)
     {
-        int pivot = array[end];
+        int pivot = arr[end];
         int smallerCount = start;
         for (int j = start; j < end; j++)
 
-            if (array[j] <= pivot)
+            if (arr[j] <= pivot)
             {
-                int temp = array[j];
-                array[j] = array[smallerCount];
-                array[smallerCount] = temp;
+                int temp = arr[j];
+                arr[j] = arr[smallerCount];
+                arr[smallerCount] = temp;
                 smallerCount += 1;
             }
 
-        array[end] = array[smallerCount];
-        array[smallerCount] = pivot;
+        arr[end] = arr[smallerCount];
+        arr[smallerCount] = pivot;
         return smallerCount;
     }
 
@@ -78,13 +71,13 @@ public:
 	call partition to divide array into two parts - divide
 	then recursively call itself on the two parts - conquer
 */
-    void quickSort(int *array, int start, int end)
+    void quickSort(int *arr, int start, int end)
     {
         if (start < end)
         {
-            int pivotLoc = partition(array, start, end);
-            quickSort(array, start, pivotLoc - 1);
-            quickSort(array, pivotLoc + 1, end);
+            int pivotLoc = partition(arr, start, end);
+            quickSort(arr, start, pivotLoc - 1);
+            quickSort(arr, pivotLoc + 1, end);
         }
     }
 
@@ -92,14 +85,14 @@ public:
 	quickSort(array, size)
 	a wrapper for quickSort(array, start, end)
 */
-    void quickSort(int *array, int size)
+    void quickSort(int *arr, int s)
     {
-        quickSort(array, 0, size - 1);
+        quickSort(arr, 0, s - 1);
     }
 
-    void printArray(int *A, int size)
+    void printArray(int *A, int s)
     {
-        for (int i = 0; i < size; i++)
+        for (int i = 0; i < s; i++)
         {
             std::cout << "A[" << i << "]"
                       << " is " << A[i] << "\n";
@@ -158,15 +151,17 @@ public:
             my_index = my_index / 2;
         }
 
+        //counting ends
+        timer_end = MPI_Wtime();
+        double local_elapsed_time = timer_end - timer_start;
+        MPI_Reduce(&local_elapsed_time, &global_elapsed_time, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
         if (process_rank == 0)
         {
-            //counting ends
-            timer_end = MPI_Wtime();
             //printArray(current_array, size);
             //process 0 is the last one that ends while loop
             //printArray(current_array, size);
             std::cout << "With comm_sz = " << num_processes << " and input array size = " << size
-                      << ", elapsed time is " << timer_end - timer_start << " seconds\n";
+                      << ", elapsed time is " << global_elapsed_time << " seconds\n";
         }
     }
 };

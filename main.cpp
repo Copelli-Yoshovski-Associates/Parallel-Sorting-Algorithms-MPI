@@ -1,5 +1,5 @@
 #include "bitonic.h"
-#include "quicksort.h"
+//#include "quicksort.h"
 
 ///////////////////////////////////////////////////
 // Main
@@ -7,8 +7,10 @@
 int main(int argc, char *argv[])
 {
     size = atoi(argv[1]);
+    if (size < defaultSize)
+        size = defaultSize;
     bitonic b;
-    quicksort q;
+    //quicksort q;
     // Initialization, get # of processes & this PID/rank
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
@@ -25,12 +27,11 @@ int main(int argc, char *argv[])
         array[i] = rand() % arraySize;
 
     // Blocks until all processes have finished generating
-
     MPI_Barrier(MPI_COMM_WORLD);
     b.start();
 
     MPI_Barrier(MPI_COMM_WORLD);
-    q.start();
+    //  q.start();
 
     // Done
     MPI_Finalize();
