@@ -1,14 +1,30 @@
 #include "bitonic.h"
 #include "quicksort.h"
 int *globalArray;
+
 int controllaSize(int oldSize)
 {
-    auto res = (double)log2(oldSize);
+    /**
+    *Controlla che la stringa possa essere distribuita 
+    * equamente su tutti i processori
+    * Esempio:
+    * processori (8), size (125)
+    * 125 % 8 --> 5 (ovvero, 5 numeri rimangono non distribuiti
+    * sui processori per essere ordinati
+    * QUINDI, 8 - 5 --> 3 (dobbiamo incrementare la size di 3, per poter 
+    * avere numeri suffcienti per poterli distribuire sui vari processori
+    */
+    oldSize += num_processes-((int)oldSize%num_processes);
+    return oldSize;
+}
+
+int controllaProcessori(int nProcessori){
+  auto res = (double)log2(nProcessori);
 
     if (res != (int)res)
-        oldSize = pow(2, (int)res + 1);
+        nProcessori = pow(2, (int)res + 1);
 
-    return oldSize;
+    return nProcessori;
 }
 
 ///////////////////////////////////////////////////
@@ -17,22 +33,24 @@ int controllaSize(int oldSize)
 int main(int argc, char *argv[])
 {
 
-    size = controllaSize(atoi(argv[1]));
-
-    if (size < LIMIT)
-        OUTPUT_NUM = size;
     bitonic b;
 
     quicksort q;
+    
     // Initialization, get # of processes & this PID/rank
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
     MPI_Comm_rank(MPI_COMM_WORLD, &process_rank);
 
+    size = controllaSize(atoi(argv[1]));
+
+    if (size < LIMIT)
+        OUTPUT_NUM = size;
+
     if (process_rank == MASTER)
     {
-        if (num_processes != controllaSize(num_processes))
+        if (num_processes != controllaProcessori(num_processes))
         {
             printf("Errore! Si prega di utilizzare un numero di processori che sia potenza di 2...\n");
             MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
