@@ -110,16 +110,17 @@ quicksort::quicksort(/* args */)
 
 void quicksort::start()
 {
-    int local_size = size / num_processes; //assuming size%comm_sz == 0
 
-    int *A = NULL; //the array to sort
-    int *local_A = (int *)malloc(local_size * sizeof(int));
+    int *A = NULL;                     //the array to sort
+    int *local_A = new int[arraySize]; //(int *)malloc(arraySize * sizeof(int));
     if (process_rank == MASTER)
     {
         //generate an array of random integers
-        A = new int[size]; //(int *)malloc(size * sizeof(int));
+        /*  A = new int[size]; //(int *)malloc(size * sizeof(int));
         getRandomArray(A, size);
-        //printArray(A, size);
+        //printArray(A, size);*/
+
+        readFromFile(A);
     }
 
     //performance(run time) testing
@@ -128,9 +129,9 @@ void quicksort::start()
         timer_start = MPI_Wtime();
 
     //distribute A to local_A for each process
-    MPI_Scatter(A, local_size, MPI_INT, local_A, local_size, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Scatter(A, arraySize, MPI_INT, local_A, arraySize, MPI_INT, 0, MPI_COMM_WORLD);
 
-    quickSort(local_A, local_size); //perform local quicksort
+    quickSort(local_A, arraySize); //perform local quicksort
 
     //merge tree (see details in report)
     int merge_tree_depth = (int)log2(num_processes);
@@ -139,7 +140,7 @@ void quicksort::start()
     int *current_array = local_A;
     while (step < merge_tree_depth)
     { //depth of merge tree
-        int merged_size = local_size * (int)pow(2, step + 1);
+        int merged_size = arraySize * (int)pow(2, step + 1);
         if (my_index % 2 == 0)
         {
 

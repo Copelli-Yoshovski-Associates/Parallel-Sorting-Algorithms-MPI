@@ -29,25 +29,11 @@ double global_elapsed_time;
 
 void printTime()
 {
-    std::cout << "With comm_sz = " << num_processes << " and input array size = " << size
-              << ", elapsed time is " << timer_end - timer_start << " seconds\n\n";
+    printf("Eseguito con %d processori, dimensione array pari a %d, tempo impiegato: %f secondi\n\n", num_processes, size, timer_end - timer_start);
 }
 
-void printInfo(int sortType, int *Print)
+std::string determineSort(int sortType)
 {
-
-    printf("Displaying sorted array (only %d elements for quick verification)\n", OUTPUT_NUM);
-
-    // Print Sorting Results
-    for (int i = 0; i < size; i++)
-    {
-        if ((i % (size / OUTPUT_NUM)) == 0)
-        {
-            printf("%d ", Print[i]);
-        }
-    }
-    printf("\n");
-
     std::string sortName = "Undefined";
     switch (sortType)
     {
@@ -64,6 +50,25 @@ void printInfo(int sortType, int *Print)
     default:
         break;
     }
+    return sortName;
+}
+
+void printInfo(int sortType, int *Print)
+{
+
+    std::string sortName = determineSort(sortType);
+    printf("Displaying sorted array (only %d elements for quick verification of ", OUTPUT_NUM);
+    printf(determineSort(sortType).append(")\n").c_str());
+
+    // Print Sorting Results
+    for (int i = 0; i < size; i++)
+    {
+        if ((i % (size / OUTPUT_NUM)) == 0)
+        {
+            printf("%d ", Print[i]);
+        }
+    }
+    printf("\n");
 
     /*   FILE *f = fopen(nomeFile, "a");
     fprintf(f, sortName.c_str());
@@ -76,11 +81,11 @@ void printInfo(int sortType, int *Print)
 
 void stampaArrayOrdinato(int *Print)
 {
-    printf("N: %d\n", size);
-    printf("P: %d\n", num_processes);
-    printf("Time(sec): %f\n", timer_end - timer_start);
+    printf("Dimensione Array: %d\n", size);
+    printf("Numero Processori usati: %d\n", num_processes);
+    printf("Tempo (in sec): %f\n", timer_end - timer_start);
 
-    printf("Final Sorted List: ");
+    printf("Array Ordinato: ");
 
     for (int i = 0; i < size; i++)
         printf("%d ", Print[i]);
