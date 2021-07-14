@@ -9,6 +9,7 @@ int OUTPUT_NUM = 10; // Number of elements to display in output
 #include <mpi.h>     // MPI Library
 
 #include <fstream>
+#include <ios>
 #define LIMIT 10
 #define DEBUG 0
 const char *nomeFile = "Timing.txt";
@@ -19,12 +20,18 @@ double timer_end;
 int process_rank;
 int num_processes;
 
-int *globalArray;
+//int *globalArray;
 int size;
 int arraySize;
 int defaultSize = 100;
 
 double global_elapsed_time;
+
+void printTime()
+{
+    std::cout << "With comm_sz = " << num_processes << " and input array size = " << size
+              << ", elapsed time is " << timer_end - timer_start << " seconds\n\n";
+}
 
 void printInfo(int sortType, int *Print)
 {
@@ -39,9 +46,9 @@ void printInfo(int sortType, int *Print)
             printf("%d ", Print[i]);
         }
     }
-    printf("\n\n");
+    printf("\n");
 
-    std::string sortName = "";
+    std::string sortName = "Undefined";
     switch (sortType)
     {
     case 1:
@@ -55,13 +62,16 @@ void printInfo(int sortType, int *Print)
         break;
 
     default:
-        sortName = "Undefined";
         break;
     }
 
-    FILE *f = fopen(nomeFile, "a");
-    // fprintf(f, sortName.c_str());
-    fprintf(f, ": %d %d %f \n", size, num_processes, timer_end - timer_start);
+    /*   FILE *f = fopen(nomeFile, "a");
+    fprintf(f, sortName.c_str());
+    fprintf(f, ": %d %d %f\n", size, num_processes, timer_end - timer_start);*/
+
+    std::ofstream fout(nomeFile, std::ios::app);
+    fout << sortName << ": " << size << " " << num_processes << " " << (timer_end - timer_start) << std::endl;
+    fout.close();
 }
 
 void stampaArrayOrdinato(int *Print)
@@ -77,11 +87,12 @@ void stampaArrayOrdinato(int *Print)
     printf("\n");
 }
 
-void printArray(int arr[], int n)
+void printArray(int arr[])
 {
     std::ofstream fout("input.txt");
+    fout << size << std::endl;
     for (int i = 0; i < size; i++)
-        fout << globalArray[i] << " ";
+        fout << arr[i] << " ";
     fout << "\n";
     fout.close();
 }

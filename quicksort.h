@@ -149,11 +149,9 @@ void quicksort::start()
             int src_rank = process_rank + (int)pow(2, step);
             MPI_Recv(recv_array, merged_size / 2, MPI_INT, src_rank, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
             merge(current_array, recv_array, merged_array, merged_size);
-            //memcpy(current_array, merged_array, merged_size);
             current_array = merged_array;
             //printArray(current_array, merged_size);
-            //delete[] merged_array;
-            // delete[] recv_array;
+            delete[] recv_array;
         }
         else
         {
@@ -176,12 +174,11 @@ void quicksort::start()
         //printArray(current_array, size);
         //process 0 is the last one that ends while loop
         //printArray(current_array, size);
-        std::cout << "With comm_sz = " << num_processes << " and input array size = " << size
-                  << ", elapsed time is " << timer_end - timer_start << " seconds\n";
+        printTime();
     }
     MPI_Barrier(MPI_COMM_WORLD);
-   /* delete[] current_array;
+    delete[] current_array;
     delete[] A;
-*/}
+}
 
 #endif
