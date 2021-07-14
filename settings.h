@@ -13,7 +13,7 @@ double timer_start;
 double timer_end;
 int process_rank;
 int num_processes;
-int *array;
+
 int *globalArray;
 int size;
 int arraySize;

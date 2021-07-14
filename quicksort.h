@@ -5,8 +5,7 @@
 class quicksort
 {
 private:
-    int *A = NULL;
-    int local_size = size / num_processes;
+    int local_size = arraySize;
 
 public:
     quicksort() {}
@@ -93,32 +92,30 @@ public:
     void printArray(int *A, int s)
     {
         for (int i = 0; i < s; i++)
-        {
-            std::cout << "A[" << i << "]"
-                      << " is " << A[i] << "\n";
-        }
-        std::cout << "\n";
+
+            printf("A[%d] is %d\n", i, A[i]);
+
+        printf("\n");
     }
 
     void start()
     {
-
         int *local_A = new int[local_size]; // (int *)malloc(local_size * sizeof(int));
+        //int *local_A = array;
+        //performance(run time) testing
+        MPI_Barrier(MPI_COMM_WORLD);
         if (process_rank == MASTER)
         {
             //generate an array of random integers
-            A = new int[size]; //(int *)malloc(size * sizeof(int));
-            getRandomArray(A, size);
-            printArray(A, size);
+            // A = new int[size]; //(int *)malloc(size * sizeof(int));
+            //  getRandomArray(A, size);
+            //printArray(local_A, local_size);
+            timer_start = MPI_Wtime();
         }
-
-        //performance(run time) testing
-        MPI_Barrier(MPI_COMM_WORLD);
-        timer_start = MPI_Wtime();
-
         //distribute A to local_A for each process
-        MPI_Scatter(A, local_size, MPI_INT, local_A, local_size, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Scatter(globalArray, local_size, MPI_INT, local_A, local_size, MPI_INT, 0, MPI_COMM_WORLD);
 
+        //printArray(local_A, local_size);
         quickSort(local_A, local_size); //perform local quicksort
 
         //merge tree (see details in report)
@@ -140,6 +137,8 @@ public:
                 merge(current_array, recv_array, merged_array, merged_size);
                 current_array = merged_array;
                 //printArray(current_array, merged_size);
+                delete[] recv_array;
+                delete[] merged_array;
             }
             else
             {
@@ -151,18 +150,17 @@ public:
             my_index = my_index / 2;
         }
 
-        //counting ends
-        timer_end = MPI_Wtime();
-        double local_elapsed_time = timer_end - timer_start;
-        MPI_Reduce(&local_elapsed_time, &global_elapsed_time, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
         if (process_rank == 0)
         {
+            //counting ends
+            timer_end = MPI_Wtime();
             //printArray(current_array, size);
             //process 0 is the last one that ends while loop
             //printArray(current_array, size);
             std::cout << "With comm_sz = " << num_processes << " and input array size = " << size
-                      << ", elapsed time is " << global_elapsed_time << " seconds\n";
+                      << ", elapsed time is " << timer_end - timer_start << " seconds\n";
         }
+        /*  delete[] A;*/
     }
 };
 

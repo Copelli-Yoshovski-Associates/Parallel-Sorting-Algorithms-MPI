@@ -206,10 +206,8 @@ void bitonic::Comparator(int j, bool expression)
 
 void bitonic::start()
 {
-
     this->localArray = new int[arraySize];
-    for (int i = 0; i < arraySize; i++)
-        this->localArray[i] = array[i];
+    MPI_Scatter(globalArray, arraySize, MPI_INT, localArray, arraySize, MPI_INT, 0, MPI_COMM_WORLD);
 
     int i, j;
 

@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "xlocnum": "cpp",
+        "initializer_list": "cpp",
+        "type_traits": "cpp",
+        "xstring": "cpp",
+        "xutility": "cpp"
+    }
+}
