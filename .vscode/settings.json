@@ -4,6 +4,8 @@
         "initializer_list": "cpp",
         "type_traits": "cpp",
         "xstring": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp"
     }
 }

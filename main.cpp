@@ -7,17 +7,21 @@
 int main(int argc, char *argv[])
 {
     size = atoi(argv[1]);
-    if (size < defaultSize)
+    /*  if (size < defaultSize)
         size = defaultSize;
+    */
+    if (size < LIMIT)
+        OUTPUT_NUM = size;
     globalArray = new int[size];
     srand(time(NULL)); // Needed for rand()
 
     // Generate Random Numbers for Sorting (within each process)
     // Less overhead without MASTER sending random numbers to each slave
-    for (int i = 0; i < size; i++)
-        globalArray[i] = rand() % size;
+    //for (int i = 0; i < size; i++)
+    //   globalArray[i] = rand() % size;
 
     bitonic b;
+
     quicksort q;
     // Initialization, get # of processes & this PID/rank
 
@@ -26,8 +30,9 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &process_rank);
     // Initialize Array for Storing Random Numbers
     arraySize = size / num_processes;
-    b.start();
+    // b.start();
 
+    MPI_Barrier(MPI_COMM_WORLD);
     q.start();
 
     // Done

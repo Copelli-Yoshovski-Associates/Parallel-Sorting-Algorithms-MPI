@@ -1,0 +1,12 @@
+Bitonic sort: 12 4 0.001515 
+Bitonic sort: 120 4 0.000289 
+Bitonic sort: 124000 4 0.037242 
+Bitonic sort: 256000000 4 26.638521 
+Bitonic sort: 256000000 4 29.698349 
+Bitonic sort: 256 4 0.000152 
+Bitonic sort: 16000000 4 1.678372 
+Bitonic sort: 16000000 8 1.137513 
+Bitonic sort: 16000000 8 1.301138 
+Bitonic sort: 256000000 8 24.616050 
+Bitonic sort: 256 8 0.002195 
+: 16000000 4 1.994621 
