@@ -116,3 +116,144 @@ Bitonic sort: 256 8 0.0002413
 Quick sort: 256 8 0.0008775
 Odd Even Transposition sort: 16 4 -0.0107414
 Odd Even Transposition sort: 16 4 1.52e-05
+Odd Even Transposition sort: 16 4 -0.0074557
+Odd Even Transposition sort: 16 4 -0.006738
+Odd Even Transposition sort: 16 4 6.6e-06
+Odd Even Transposition sort: 16 4 3.97e-05
+Odd Even Transposition sort: 1024 4 0.0001249
+Odd Even Transposition sort: 16 4 4.43e-05
+Odd Even Transposition sort: 1024 4 0.0002
+Bitonic sort: 1024 4 8.65e-05
+Quick sort: 1024 4 5.84e-05
+Bitonic sort: 1024 4 0.0001118
+Quick sort: 1024 4 0.000119
+Odd Even Transposition sort: 1024 4 0.0001035
+Bitonic sort: 16 4 4.59e-05
+Quick sort: 16 4 3.14e-05
+Odd Even Transposition sort: 16 4 8.72e-05
+Bitonic sort: 1024 4 0.0001053
+Quick sort: 1024 4 7.71e-05
+Bitonic sort: 16 4 3.48e-05
+Quick sort: 16 4 4.06e-05
+Odd Even Transposition sort: 16 4 0.00013
+Bitonic sort: 16 4 3.38e-05
+Quick sort: 16 4 2.87e-05
+Odd Even Transposition sort: 16 4 0.000115
+Bitonic sort: 16 2 1.88e-05
+Quick sort: 16 2 1.54e-05
+Odd Even Transposition sort: 16 2 7.91e-05
+Bitonic sort: 16 8 5.41e-05
+Quick sort: 16 8 2.74e-05
+Odd Even Transposition sort: 16 8 0.0003371
+Bitonic sort: 16 8 0.0001461
+Quick sort: 16 8 7.16e-05
+Odd Even Transposition sort: 16 8 0.0002733
+Bitonic sort: 32 8 6.78e-05
+Quick sort: 32 8 0.0001128
+Odd Even Transposition sort: 32 8 0.0001326
+Bitonic sort: 32 8 0.0001943
+Quick sort: 32 8 0.0001224
+Odd Even Transposition sort: 32 8 0.0008215
+Bitonic sort: 32 8 0.000157
+Quick sort: 32 8 5.17e-05
+Odd Even Transposition sort: 32 8 0.0001908
+Bitonic sort: 32 4 6.79e-05
+Quick sort: 32 4 8.91e-05
+Odd Even Transposition sort: 32 4 0.0001515
+Bitonic sort: 64 4 5.73e-05
+Quick sort: 64 4 3.69e-05
+Odd Even Transposition sort: 64 4 0.0001895
+Bitonic sort: 16 4 2.75e-05
+Quick sort: 16 4 2.07e-05
+Odd Even Transposition sort: 16 4 0.0001072
+Bitonic sort: 16 4 0.0002013
+Quick sort: 16 4 2.31e-05
+Odd Even Transposition sort: 16 4 0.0001328
+Bitonic sort: 16 4 4.6e-05
+Quick sort: 16 4 4.02e-05
+Odd Even Transposition sort: 16 4 0.0001299
+Bitonic sort: 16 4 9.18e-05
+Quick sort: 16 4 3.18e-05
+Odd Even Transposition sort: 16 4 0.0001262
+Bitonic sort: 16 4 3.97e-05
+Quick sort: 16 4 5.03e-05
+Odd Even Transposition sort: 16 4 0.0001421
+Bitonic sort: 16 4 4.07e-05
+Quick sort: 16 4 1.99e-05
+Odd Even Transposition sort: 16 4 0.0002225
+Bitonic sort: 16 4 3.82e-05
+Quick sort: 16 4 2.33e-05
+Odd Even Transposition sort: 16 4 0.0003286
+Bitonic sort: 16 4 3.22e-05
+Quick sort: 16 4 3.72e-05
+Odd Even Transposition sort: 16 4 0.0001756
+Bitonic sort: 16 4 2.91e-05
+Quick sort: 16 4 1.86e-05
+Odd Even Transposition sort: 16 4 0.0002655
+Bitonic sort: 16 4 4.53e-05
+Quick sort: 16 4 4.81e-05
+Odd Even Transposition sort: 16 4 0.0002369
+Bitonic sort: 16 4 3.47e-05
+Quick sort: 16 4 2.71e-05
+Odd Even Transposition sort: 16 4 0.000225
+Bitonic sort: 16 4 4.64e-05
+Quick sort: 16 4 3.38e-05
+Odd Even Transposition sort: 16 4 0.0003616
+Bitonic sort: 16 4 6.96e-05
+Quick sort: 16 4 2.84e-05
+Odd Even Transposition sort: 16 4 0.0002974
+Bitonic sort: 16 4 5.9e-05
+Quick sort: 16 4 3.78e-05
+Odd Even Transposition sort: 16 4 0.0001997
+Bitonic sort: 16 4 2.61e-05
+Quick sort: 16 4 2.12e-05
+Bitonic sort: 16 4 3.98e-05
+Quick sort: 16 4 2.35e-05
+Bitonic sort: 16 4 3.52e-05
+Quick sort: 16 4 2.28e-05
+Bitonic sort: 16 4 4.43e-05
+Quick sort: 16 4 0.0017622
+Bitonic sort: 16 4 2.52e-05
+Quick sort: 16 4 2.13e-05
+Bitonic sort: 16 4 4.59e-05
+Quick sort: 16 4 2.86e-05
+Bitonic sort: 16 4 6.1e-05
+Quick sort: 16 4 4.37e-05
+Bitonic sort: 16 4 4.04e-05
+Quick sort: 16 4 3.25e-05
+Odd Even Transposition sort: 16 4 0.0001599
+Bitonic sort: 32 4 3.21e-05
+Quick sort: 32 4 4.29e-05
+Odd Even Transposition sort: 32 4 0.0002091
+Bitonic sort: 32 4 4.07e-05
+Quick sort: 32 4 2.57e-05
+Odd Even Transposition sort: 32 4 0.0001291
+Bitonic sort: 32 4 5.84e-05
+Quick sort: 32 4 8.58e-05
+Odd Even Transposition sort: 32 4 0.0005091
+Bitonic sort: 32 4 4.36e-05
+Quick sort: 32 4 0.0003016
+Odd Even Transposition sort: 32 4 0.001681
+Bitonic sort: 32 2 1.73e-05
+Quick sort: 32 2 1.78e-05
+Odd Even Transposition sort: 32 2 8.57e-05
+Bitonic sort: 32 8 0.0001358
+Quick sort: 32 8 0.0001114
+Odd Even Transposition sort: 32 8 0.0002343
+Bitonic sort: 32 8 0.000109
+Quick sort: 32 8 5.28e-05
+Bitonic sort: 32 8 0.000228
+Quick sort: 32 8 4.45e-05
+Odd Even Transposition sort: 32 8 0.0001812
+Bitonic sort: 1024 4 0.0001462
+Quick sort: 1024 4 0.0001088
+Odd Even Transposition sort: 1024 4 0.0001475
+Bitonic sort: 256000000 4 20.8783
+Quick sort: 256000000 4 18.8751
+Odd Even Transposition sort: 256000000 4 27.5666
+Bitonic sort: 16 8 0.0001091
+Quick sort: 16 8 0.0002447
+Odd Even Transposition sort: 16 8 0.0002431
+Bitonic sort: 512000000 4 49.5709
+Quick sort: 512000000 4 39.7919
+Odd Even Transposition sort: 512000000 4 55.6117

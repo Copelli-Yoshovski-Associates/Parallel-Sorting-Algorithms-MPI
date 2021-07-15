@@ -11,7 +11,7 @@ int OUTPUT_NUM = 10; // Number of elements to display in output
 #include <fstream>
 #include <ios>
 #define LIMIT 10
-#define DEBUG 1
+#define DEBUG 0
 const char *nomeFile = "Timing.txt";
 
 // Globals

@@ -73,10 +73,10 @@ int main(int argc, char *argv[])
     MPI_Barrier(MPI_COMM_WORLD);
     // Initialize Array for Storing Random Numbers
     arraySize = size / num_processes;
-    //b.start();
+    b.start();
 
     MPI_Barrier(MPI_COMM_WORLD);
-    //q.start();
+    q.start();
 
     MPI_Barrier(MPI_COMM_WORLD);
     o.start();

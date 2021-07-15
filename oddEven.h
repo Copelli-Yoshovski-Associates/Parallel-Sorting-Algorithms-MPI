@@ -16,96 +16,103 @@ int compare(const void *a, const void *b)
 class oddEven
 {
 private:
-    enum
+    void mergeMax(int x[], int tmpMergeListA[], int tmpMergeListB[], int I)
     {
-        MAX = 0,
-        MIN
-    };
-
-    int evenPartner, oddPartner, upperI;
-    MPI_Status status;
-    int *tmpMergeListA, *tmpMergeListB, *x;
-
-public:
-    oddEven();
-    ~oddEven();
-    void start();
-
-    void merge(int tipo)
-    {
+        /*mergesort a and b */
+        /*return n highest values */
         int a, b, c;
-        if (tipo == MAX)
+        a = b = c = I - 1;
+        while (c >= 0)
         {
-            a = b = c = arraySize - 1;
-            while (c >= 0)
-            {
-                if (x[a] >= tmpMergeListA[b])
-                    tmpMergeListB[c--] = x[a--];
-                else
-                    tmpMergeListB[c--] = tmpMergeListA[b--];
-            }
+            if (x[a] >= tmpMergeListA[b])
+                tmpMergeListB[c--] = x[a--];
+            else
+                tmpMergeListB[c--] = tmpMergeListA[b--];
         }
-        else if (tipo == MIN)
-        {
-            a = b = c = 0;
-            while (c < arraySize)
-            {
-                if (x[a] <= tmpMergeListA[b])
-                    tmpMergeListB[c++] = x[a++];
-                else
-                    tmpMergeListB[c++] = tmpMergeListA[b++];
-            }
-        }
-        memcpy(x, tmpMergeListB, arraySize);
+
+        memcpy(x, tmpMergeListB, I * sizeof(int));
     }
 
-    void oddEvenTranspose(int fase)
+    void mergeMin(int x[], int tmpMergeListA[], int tmpMergeListB[], int I)
+    {
+        /*mergesort a and b */
+        /*return n lowest values */
+        int a, b, c;
+        a = b = c = 0;
+        while (c < I)
+        {
+            if (x[a] <= tmpMergeListA[b])
+                tmpMergeListB[c++] = x[a++];
+            else
+                tmpMergeListB[c++] = tmpMergeListA[b++];
+        }
+        memcpy(x, tmpMergeListB, I * sizeof(int));
+    }
+    void oddEvenTranspose(int x[], int tmpMergeListA[], int tmpMergeListB[], int I, int phase, int evenPartner, int oddPartner, int evenPartnerI, int oddPartnerI, int myrank, int P, MPI_Comm comm)
     {
         MPI_Status status;
-        if ((fase % 2) == 0)
+        if ((phase % 2) == 0)
         {
             /*even phase */
             if (evenPartner >= 0)
             {
-                MPI_Sendrecv(x, arraySize, MPI_INT, evenPartner, 0, tmpMergeListA, arraySize, MPI_INT, evenPartner, 0, MPI_COMM_WORLD, &status);
-                if ((process_rank % 2) == 0)
+                MPI_Sendrecv(x, I, MPI_INT, evenPartner, 0,
+                             tmpMergeListA, I, MPI_INT, evenPartner, 0, comm, &status);
+                if ((myrank % 2) == 0)
+                {
                     /*extract highest or lowest I values from merged list*/
-                    merge(MIN);
+                    mergeMin(x, tmpMergeListA, tmpMergeListB, I);
+                }
                 else
-                    merge(MAX);
+                {
+                    mergeMax(x, tmpMergeListA, tmpMergeListB, I);
+                }
             }
         }
-        /*odd fase */
-        if (oddPartner >= 0)
+        else
         {
-            MPI_Sendrecv(x, arraySize, MPI_INT, oddPartner, 0, tmpMergeListA, arraySize, MPI_INT, oddPartner, 0, MPI_COMM_WORLD, &status);
-            if ((process_rank % 2) == 0)
-                merge(MAX);
-            else
-                merge(MIN);
+            /*odd phase */
+            if (oddPartner >= 0)
+            {
+                MPI_Sendrecv(x, I, MPI_INT, oddPartner, 0,
+                             tmpMergeListA, I, MPI_INT, oddPartner, 0, comm, &status);
+                if ((myrank % 2) == 0)
+                {
+                    mergeMax(x, tmpMergeListA, tmpMergeListB, I);
+                }
+                else
+                {
+                    mergeMin(x, tmpMergeListA, tmpMergeListB, I);
+                }
+            }
         }
     }
+
+    int evenPartner, oddPartner;
+    int *tmpMergeListA, *tmpMergeListB;
+    int evenPartnerI, oddPartnerI, myrank, P;
+
+public:
+    oddEven();
+    void start();
 };
 
 oddEven::oddEven(/* args */)
 {
 }
 
-oddEven::~oddEven()
-{
-}
-
 void oddEven::start()
 {
-    if (process_rank == MASTER)
-    {
-        readFromFile(x);
-        printf("OddEven partito\nArray letto da input: ");
-        stampaArrayOrdinato(x);
-    } /*
+    myrank = process_rank;
+    P = num_processes;
+    int *x = NULL;
+    int *local_A = new int[arraySize];
+    readFromFile(x);
+
     MPI_Barrier(MPI_COMM_WORLD);
     if (process_rank == MASTER)
         timer_start = MPI_Wtime();
+    MPI_Scatter(x, arraySize, MPI_INT, local_A, arraySize, MPI_INT, 0, MPI_COMM_WORLD);
     if (process_rank % 2 != 0)
     {
         evenPartner = process_rank - 1;
@@ -122,39 +129,41 @@ void oddEven::start()
         oddPartner = process_rank - 1;
     }
 
-    qsort(x, arraySize, sizeof(int), compare);
+    qsort(local_A, arraySize, sizeof(int), compare);
 
     tmpMergeListA = new int[arraySize];
     tmpMergeListB = new int[arraySize];
 
     for (int fase = 0; fase < num_processes; fase++)
-        oddEvenTranspose(fase);
+        oddEvenTranspose(local_A, tmpMergeListA, tmpMergeListB,
+                         arraySize, fase, evenPartner, oddPartner,
+                         evenPartnerI, oddPartnerI, myrank, P,
+                         MPI_COMM_WORLD);
 
     MPI_Barrier(MPI_COMM_WORLD);
     if (process_rank == MASTER)
         timer_end = MPI_Wtime();
-    
+
+    delete[] tmpMergeListA;
+    delete[] tmpMergeListB;
     int *Print = NULL;
+    MPI_Barrier(MPI_COMM_WORLD);
+    if (process_rank == MASTER)
+        Print = new int[size];
+    MPI_Gather(local_A, arraySize, MPI_INT, Print, arraySize, MPI_INT, MASTER, MPI_COMM_WORLD);
+    MPI_Barrier(MPI_COMM_WORLD);
     if (process_rank == MASTER)
     {
-        Print = new int[size];
-        MPI_Gather(x, arraySize, MPI_INT, Print, arraySize, MPI_INT, 0, MPI_COMM_WORLD);
-
         printInfo(3, Print);
-
+        //MPI_Gather(local_A, arraySize, MPI_INT, Print, arraySize, MPI_INT, MASTER, MPI_COMM_WORLD);
         if (DEBUG)
             stampaArrayOrdinato(Print);
         printTime();
+        delete[] Print;
     }
-    else
-        MPI_Gather(x, arraySize, MPI_INT, Print, arraySize, MPI_INT, 0, MPI_COMM_WORLD);
-*/
     MPI_Barrier(MPI_COMM_WORLD);
-    // if (process_rank == MASTER)
-    delete[] x;
-    /*delete[] tmpMergeListA;
-    delete[] tmpMergeListB;
-    delete[] Print;*/
+
+    delete[] local_A;
 }
 
 #endif
