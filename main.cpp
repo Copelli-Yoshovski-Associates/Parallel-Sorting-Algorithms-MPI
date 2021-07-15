@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
         // Generate Random Numbers for Sorting (within each process)
         // Less overhead without MASTER sending random numbers to each slave
         for (int i = 0; i < size; i++)
-            globalArray[i] = rand() % size;
+            globalArray[i] = (rand() % (size - 1)) + 1;
         printf("Fine generazione %f\n", MPI_Wtime() - start);
         start = MPI_Wtime();
         printArray(globalArray);
@@ -71,12 +71,13 @@ int main(int argc, char *argv[])
         delete[] globalArray;
         al_init();
         al_init_primitives_addon();
+        scala = WINDOWSIZE / 2;
         display = al_create_display(WINDOWSIZE, WINDOWSIZE);
     }
     MPI_Barrier(MPI_COMM_WORLD);
     // Initialize Array for Storing Random Numbers
     arraySize = size / num_processes;
-    b.start();
+    //b.start();
 
     MPI_Barrier(MPI_COMM_WORLD);
     q.start();

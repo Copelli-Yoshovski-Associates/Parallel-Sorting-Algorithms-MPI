@@ -10,6 +10,8 @@ int OUTPUT_NUM = 10; // Number of elements to display in output
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_primitives.h"
 #include "allegro5/allegro_image.h"
+//#include <windows.h>
+#include <stdio.h>
 
 #include <fstream>
 #include <ios>
@@ -19,8 +21,9 @@ int OUTPUT_NUM = 10; // Number of elements to display in output
 #define WINDOWSIZE 600
 ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_COLOR color = al_map_rgb(255, 0, 0);
-const int scala = WINDOWSIZE / 2;
+int scala = WINDOWSIZE / 2;
 const char *nomeFile = "Timing.txt";
+bool displayFlag = true;
 
 // Globals
 double timer_start;

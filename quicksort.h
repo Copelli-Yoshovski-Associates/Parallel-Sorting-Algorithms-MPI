@@ -7,6 +7,45 @@ class quicksort
 private:
     /* data */
 public:
+    void showGraphics(const int *local_A)
+    {
+        if (process_rank != MASTER || display == NULL)
+            return;
+
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        int salto = 1;
+        if (size > scala)
+        {
+            salto = arraySize / scala;
+            if (salto == 0)
+                salto = 1;
+        }
+        int div = size / scala;
+
+        unsigned posizioneX = 0;
+        //if (displayFlag)
+        for (int i = 0; i < arraySize; i += salto)
+        {
+
+            //            if (arraySize >)
+            /*int val = WINDOWSIZE - (local_A[i] / div);
+            if (size > WINDOWSIZE)
+                val = WINDOWSIZE - (WINDOWSIZE / (local_A[i] / div));
+*/
+            int val = WINDOWSIZE - (local_A[i] / div);
+            /*double partialResult = (double)(WINDOWSIZE / (size / local_A[i]));
+            int val = WINDOWSIZE - (partialResult);
+            */
+            printf("WINDOWSIZE A[%d]/scala = %d\n", i, val);
+            al_draw_line(posizioneX, WINDOWSIZE, posizioneX, val, color, 1.0);
+            posizioneX += 2;
+            //   if (posizioneX == 8)
+            displayFlag = false;
+        }
+        al_flip_display();
+        al_rest(0.2);
+    }
+
     quicksort();
     /*
 	merge(array1, array2, merged_array, size)
@@ -76,6 +115,8 @@ public:
     {
         if (start < end)
         {
+            showGraphics(array);
+            MPI_Barrier(MPI_COMM_WORLD);
             int pivotLoc = partition(array, start, end);
             quickSort(array, start, pivotLoc - 1);
             quickSort(array, pivotLoc + 1, end);
