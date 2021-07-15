@@ -7,11 +7,19 @@ int OUTPUT_NUM = 10; // Number of elements to display in output
 #include <time.h>    // Timer
 #include <math.h>    // Logarithm
 #include <mpi.h>     // MPI Library
+#include "allegro5/allegro.h"
+#include "allegro5/allegro_primitives.h"
+#include "allegro5/allegro_image.h"
 
 #include <fstream>
 #include <ios>
 #define LIMIT 10
 #define DEBUG 0
+
+#define WINDOWSIZE 600
+ALLEGRO_DISPLAY *display = NULL;
+ALLEGRO_COLOR color = al_map_rgb(255, 0, 0);
+const int scala = WINDOWSIZE / 2;
 const char *nomeFile = "Timing.txt";
 
 // Globals

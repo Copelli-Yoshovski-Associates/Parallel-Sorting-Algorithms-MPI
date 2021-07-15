@@ -121,6 +121,30 @@ private:
         }
     }
 
+    void showGraphics()
+    {
+        if (process_rank != MASTER)
+            return;
+
+        al_init();
+        al_init_primitives_addon();
+        if (display == NULL)
+            return;
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        unsigned posizioneX = 0;
+        int salto = 1;
+        if (arraySize > scala)
+            salto = arraySize / scala;
+        for (int i = 0; i < arraySize; i += salto)
+        {
+            if (arraySize >)
+                al_draw_line(posizioneX, WINDOWSIZE, posizioneX, WINDOWSIZE - local_list[i], color, 1.0);
+            posizioneX += 2;
+        }
+        al_flip_display();
+        al_rest(0.2);
+    }
+
 public:
     bitonic() {}
     void start();
@@ -140,7 +164,6 @@ void bitonic::start()
     MPI_Barrier(MPI_COMM_WORLD);
     if (DEBUG)
     {
-
         printf("Processor %d: ", process_rank);
         for (int i = 0; i < arraySize; i++)
             printf("%d ", local_list[i]);
@@ -152,10 +175,14 @@ void bitonic::start()
     qsort(local_list, arraySize, sizeof(int), compareBitonic);
 
     for (int dimProcessori = 2, andBit = 2; dimProcessori <= num_processes; dimProcessori = dimProcessori * 2, andBit = andBit << 1)
+    {
+        showGraphics();
+        MPI_Barrier(MPI_COMM_WORLD);
         if ((process_rank & andBit) == 0)
             bitonicsort_increase(arraySize, local_list, dimProcessori, MPI_COMM_WORLD);
         else
             bitonicsort_decrease(arraySize, local_list, dimProcessori, MPI_COMM_WORLD);
+    }
 
     MPI_Barrier(MPI_COMM_WORLD);
 
