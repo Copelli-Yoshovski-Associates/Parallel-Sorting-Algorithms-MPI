@@ -123,12 +123,7 @@ private:
 
     void showGraphics()
     {
-        if (process_rank != MASTER)
-            return;
-
-        al_init();
-        al_init_primitives_addon();
-        if (display == NULL)
+        if (process_rank != MASTER || display == NULL)
             return;
         al_clear_to_color(al_map_rgb(0, 0, 0));
         unsigned posizioneX = 0;
@@ -137,8 +132,8 @@ private:
             salto = arraySize / scala;
         for (int i = 0; i < arraySize; i += salto)
         {
-            if (arraySize >)
-                al_draw_line(posizioneX, WINDOWSIZE, posizioneX, WINDOWSIZE - local_list[i], color, 1.0);
+            //            if (arraySize >)
+            al_draw_line(posizioneX, WINDOWSIZE, posizioneX, WINDOWSIZE - (local_list[i] / salto), color, 1.0);
             posizioneX += 2;
         }
         al_flip_display();
@@ -177,7 +172,8 @@ void bitonic::start()
     for (int dimProcessori = 2, andBit = 2; dimProcessori <= num_processes; dimProcessori = dimProcessori * 2, andBit = andBit << 1)
     {
         showGraphics();
-        MPI_Barrier(MPI_COMM_WORLD);
+        MPI_
+            MPI_Barrier(MPI_COMM_WORLD);
         if ((process_rank & andBit) == 0)
             bitonicsort_increase(arraySize, local_list, dimProcessori, MPI_COMM_WORLD);
         else
