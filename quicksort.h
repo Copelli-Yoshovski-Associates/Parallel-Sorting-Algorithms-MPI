@@ -7,7 +7,7 @@ class quicksort
 private:
     /* data */
 public:
-    quicksort(/* args */);
+    quicksort();
     /*
 	merge(array1, array2, merged_array, size)
 	merge two arrays with the same size into array
@@ -91,16 +91,6 @@ public:
         quickSort(array, 0, size - 1);
     }
 
-    void printArray(int *A, int size)
-    {
-        for (int i = 0; i < size; i++)
-        {
-            //	std::cout << "A[" << i << "]" << " is " << A[i] << "\n";
-            printf("%d ", A[i]);
-        }
-        std::cout << "\n";
-    }
-
     void start();
 };
 
@@ -172,7 +162,8 @@ void quicksort::start()
 
         printInfo(2, current_array);
 
-        //printArray(current_array, size);
+        if (DEBUG)
+            stampaArrayOrdinato(current_array);
         //process 0 is the last one that ends while loop
         //printArray(current_array, size);
         printTime();

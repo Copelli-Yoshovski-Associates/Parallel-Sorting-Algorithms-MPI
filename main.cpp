@@ -1,6 +1,6 @@
 #include "bitonic.h"
 #include "quicksort.h"
-int *globalArray;
+#include "oddEven.h"
 
 int controllaSize(int oldSize)
 {
@@ -14,12 +14,14 @@ int controllaSize(int oldSize)
     * QUINDI, 8 - 5 --> 3 (dobbiamo incrementare la size di 3, per poter 
     * avere numeri suffcienti per poterli distribuire sui vari processori
     */
-    oldSize += num_processes-((int)oldSize%num_processes);
+    if (oldSize % num_processes != 0)
+        oldSize += num_processes - (oldSize % num_processes);
     return oldSize;
 }
 
-int controllaProcessori(int nProcessori){
-  auto res = (double)log2(nProcessori);
+int controllaProcessori(int nProcessori)
+{
+    auto res = (double)log2(nProcessori);
 
     if (res != (int)res)
         nProcessori = pow(2, (int)res + 1);
@@ -34,9 +36,9 @@ int main(int argc, char *argv[])
 {
 
     bitonic b;
-
     quicksort q;
-    
+    oddEven o;
+
     // Initialization, get # of processes & this PID/rank
 
     MPI_Init(&argc, &argv);
@@ -55,7 +57,7 @@ int main(int argc, char *argv[])
             printf("Errore! Si prega di utilizzare un numero di processori che sia potenza di 2...\n");
             MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
         }
-        globalArray = new int[size];
+        int *globalArray = new int[size];
         srand(time(NULL)); // Needed for rand()
         double start = MPI_Wtime();
         // Generate Random Numbers for Sorting (within each process)
@@ -66,19 +68,21 @@ int main(int argc, char *argv[])
         start = MPI_Wtime();
         printArray(globalArray);
         printf("Fine scrittura su file in %f\n", MPI_Wtime() - start);
+        delete[] globalArray;
     }
     MPI_Barrier(MPI_COMM_WORLD);
     // Initialize Array for Storing Random Numbers
     arraySize = size / num_processes;
-    b.start();
+    //b.start();
 
     MPI_Barrier(MPI_COMM_WORLD);
-    q.start();
+    //q.start();
 
+    MPI_Barrier(MPI_COMM_WORLD);
+    o.start();
     // Done
 
     MPI_Barrier(MPI_COMM_WORLD);
     MPI_Finalize();
-    delete[] globalArray;
     return 0;
 }

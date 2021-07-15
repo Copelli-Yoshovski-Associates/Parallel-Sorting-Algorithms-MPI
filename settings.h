@@ -11,7 +11,7 @@ int OUTPUT_NUM = 10; // Number of elements to display in output
 #include <fstream>
 #include <ios>
 #define LIMIT 10
-#define DEBUG 0
+#define DEBUG 1
 const char *nomeFile = "Timing.txt";
 
 // Globals
@@ -62,12 +62,9 @@ void printInfo(int sortType, int *Print)
 
     // Print Sorting Results
     for (int i = 0; i < size; i++)
-    {
         if ((i % (size / OUTPUT_NUM)) == 0)
-        {
             printf("%d ", Print[i]);
-        }
-    }
+
     printf("\n");
 
     /*   FILE *f = fopen(nomeFile, "a");

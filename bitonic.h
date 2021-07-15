@@ -2,7 +2,7 @@
 #define BITONIC_H
 #include "settings.h"
 
-int compare(const void *a, const void *b)
+int compareBitonic(const void *a, const void *b)
 {
     if (*(int *)a > *(int *)b)
         return 1;
@@ -149,7 +149,7 @@ void bitonic::start()
     MPI_Barrier(MPI_COMM_WORLD);
     if (process_rank == MASTER)
         timer_start = MPI_Wtime();
-    qsort(local_list, arraySize, sizeof(int), compare);
+    qsort(local_list, arraySize, sizeof(int), compareBitonic);
 
     for (int dimProcessori = 2, andBit = 2; dimProcessori <= num_processes; dimProcessori = dimProcessori * 2, andBit = andBit << 1)
         if ((process_rank & andBit) == 0)
