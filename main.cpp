@@ -69,15 +69,18 @@ int main(int argc, char *argv[])
         printArray(globalArray);
         printf("Fine scrittura su file in %f\n", MPI_Wtime() - start);
         delete[] globalArray;
-        al_init();
-        al_init_primitives_addon();
-        scala = WINDOWSIZE / 2;
-        display = al_create_display(WINDOWSIZE, WINDOWSIZE);
+        if (showGraphic)
+        {
+            al_init();
+            al_init_primitives_addon();
+            scala = WINDOWSIZE / 2;
+            display = al_create_display(WINDOWSIZE, WINDOWSIZE);
+        }
     }
     MPI_Barrier(MPI_COMM_WORLD);
     // Initialize Array for Storing Random Numbers
     arraySize = size / num_processes;
-    //b.start();
+    b.start();
 
     MPI_Barrier(MPI_COMM_WORLD);
     q.start();

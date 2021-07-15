@@ -121,28 +121,6 @@ private:
         }
     }
 
-    void showGraphics()
-    {
-        if (process_rank != MASTER || display == NULL)
-            return;
-        al_clear_to_color(al_map_rgb(0, 0, 0));
-        unsigned posizioneX = 0;
-        int salto = 1;
-        if (arraySize > scala)
-            salto = arraySize / scala;
-        //if (displayFlag)
-        for (int i = 0; i < arraySize; i += salto)
-        {
-            //            if (arraySize >)
-            al_draw_line(posizioneX, WINDOWSIZE, posizioneX, WINDOWSIZE - (local_list[i] / salto), color, 1.0);
-            posizioneX += 2;
-            //   if (posizioneX == 8)
-            displayFlag = false;
-        }
-        al_flip_display();
-        al_rest(0.2);
-    }
-
 public:
     bitonic() {}
     void start();
@@ -175,9 +153,6 @@ void bitonic::start()
 
     for (int dimProcessori = 2, andBit = 2; dimProcessori <= num_processes; dimProcessori = dimProcessori * 2, andBit = andBit << 1)
     {
-        showGraphics();
-        MPI_Barrier(MPI_COMM_WORLD);
-        sleep(1);
         if ((process_rank & andBit) == 0)
             bitonicsort_increase(arraySize, local_list, dimProcessori, MPI_COMM_WORLD);
         else
