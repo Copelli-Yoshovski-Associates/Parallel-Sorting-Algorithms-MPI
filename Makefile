@@ -8,9 +8,9 @@ COMPILER=mpic++
 # Source files
 SRCS=$(NOME_PROGRAMMA).cpp
 
-OUTPUT_PROGRAMMA = sorting
+OUTPUT_PROGRAMMA = sorting.out
 
 ALLEGRO_FLAGS=-lallegro -lallegro_main -lallegro_primitives -lallegro_image
 
 $(OUTPUT_PROGRAMMA).out: $(SRCS)
-	$(COMPILER) $(SRCS)  $(CFLAGS) $(ALLEGRO_FLAGS)
+	$(COMPILER) $(SRCS) -o $(OUTPUT_PROGRAMMA) $(CFLAGS) $(ALLEGRO_FLAGS)
