@@ -75,12 +75,12 @@ int main(int argc, char *argv[])
         start = MPI_Wtime();
         printArray(globalArray);
         printf("Fine scrittura su file in %f\n", MPI_Wtime() - start);
+        printf("---------------------------------------------------\n");
         delete[] globalArray;
         if (showGraphic)
         {
             al_init();
             al_init_primitives_addon();
-            scala = WINDOWSIZE / 2;
             display = al_create_display(WINDOWSIZE, WINDOWSIZE);
         }
     }

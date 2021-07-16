@@ -86,3 +86,20 @@ Bitonic sort: 1048576 8 0.339934
 Odd Even Transposition sort: 1048576 8 45.9397
 Quick sort: 1048576 8 0.0698155
 Bitonic sort: 1048576 4 0.170189
+Bitonic sort: 16384 4 0.0047336
+Odd Even Transposition sort: 16384 4 0.0561113
+Quick sort: 16384 4 0.0118652
+Bitonic sort: 262144 4 0.0196703
+Odd Even Transposition sort: 262144 4 3.87908
+Quick sort: 262144 4 0.0100087
+Bitonic sort: 2097152 4 0.176993
+Bitonic sort: 2097152 4 0.314462
+Bitonic sort: 256 4 5.2e-05
+Odd Even Transposition sort: 256 4 0.0001008
+Quick sort: 256 4 0.00012
+Bitonic sort: 2048 4 0.0001601
+Odd Even Transposition sort: 2048 4 0.0003758
+Quick sort: 2048 4 0.0001538
+Bitonic sort: 16384 4 0.0011152
+Odd Even Transposition sort: 16384 4 0.0131288
+Quick sort: 16384 4 0.0008062

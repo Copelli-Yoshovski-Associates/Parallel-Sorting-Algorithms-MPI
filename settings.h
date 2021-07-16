@@ -21,7 +21,7 @@ int OUTPUT_NUM = 10; // Number of elements to display in output
 #define WINDOWSIZE 600
 ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_COLOR color = al_map_rgb(255, 0, 0);
-int scala = WINDOWSIZE / 2;
+const int scala = WINDOWSIZE / 2;
 const char *nomeFile = "Timing.txt";
 bool showGraphic = false;
 
