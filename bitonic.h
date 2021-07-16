@@ -24,8 +24,42 @@ private:
 
     int *local_list, *temp_list, *merge_list;
 
+    void bitonicSortMPI(int *arr, int n)
+    {
+        int k, j, l, i, temp;
+        for (k = 2; k <= n; k *= 2)
+        {
+
+            for (j = k / 2; j > 0; j /= 2)
+            {
+
+                for (i = 0; i < n; i++)
+                {
+
+                    l = i ^ j;
+                    if (l > i)
+                    {
+                        if (((i & k) == 0) && (arr[i] > arr[l]) || (((i & k) != 0) && (arr[i] < arr[l])))
+                        {
+                            temp = arr[i];
+                            arr[i] = arr[l];
+                            arr[l] = temp;
+                        }
+                    }
+                }
+
+                if (showGraphic)
+                {
+                    showGraphics(arr);
+                    MPI_Barrier(MPI_COMM_WORLD);
+                }
+            }
+        }
+    }
+
     void mergeSplit(int arraySize, int *local_list, int which_keys, int partner, MPI_Comm comm)
     {
+
         MPI_Status status;
         temp_list = new int[arraySize]; //(int *)malloc(arraySize * sizeof(int));
         MPI_Sendrecv(local_list, arraySize, MPI_INT, partner, 0, temp_list, arraySize, MPI_INT, partner, 0, comm, &status);
@@ -33,6 +67,7 @@ private:
             mergeHigh(arraySize, local_list, temp_list);
         else
             mergeLow(arraySize, local_list, temp_list);
+
         //free(temp_list);
         delete[] temp_list;
     }
@@ -99,6 +134,7 @@ private:
 
         for (i = 0; i < arraySize; i++)
             list1[i] = merge_list[i];
+
         // free(merge_list);
         delete[] merge_list;
     }
@@ -180,15 +216,11 @@ void bitonic::start()
 
     if (process_rank == MASTER)
         timer_start = MPI_Wtime();
-    qsort(local_list, arraySize, sizeof(int), compareBitonic);
+    //   qsort(local_list, arraySize, sizeof(int), compareBitonic);
+    bitonicSortMPI(local_list, arraySize);
 
     for (int dimProcessori = 2, andBit = 2; dimProcessori <= num_processes; dimProcessori = dimProcessori * 2, andBit = andBit << 1)
     {
-        if (showGraphic)
-        {
-            showGraphics(local_list);
-            MPI_Barrier(MPI_COMM_WORLD);
-        }
         if ((process_rank & andBit) == 0)
             bitonicsort_increase(arraySize, local_list, dimProcessori, MPI_COMM_WORLD);
         else
