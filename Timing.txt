@@ -427,3 +427,8 @@ Odd Even Transposition sort: 180 4 5.2631e-05
 Bitonic sort: 18000 4 0.000789375
 Quick sort: 18000 4 0.00267194
 Odd Even Transposition sort: 18000 4 0.0116871
+Bitonic sort: 18000 4 0.000806723
+Quick sort: 18000 4 0.000993608
+Odd Even Transposition sort: 18000 4 0.000857382
+Bitonic sort: 18000 4 0.419151
+Bitonic sort: 18000 4 0.42745

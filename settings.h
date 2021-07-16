@@ -23,7 +23,7 @@ ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_COLOR color = al_map_rgb(255, 0, 0);
 int scala = WINDOWSIZE / 2;
 const char *nomeFile = "Timing.txt";
-bool showGraphic = false;
+bool showGraphic = true;
 
 // Globals
 double timer_start;

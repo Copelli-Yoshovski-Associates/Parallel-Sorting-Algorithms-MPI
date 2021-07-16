@@ -120,6 +120,37 @@ private:
             eor_bit = eor_bit >> 1;
         }
     }
+    void showGraphics(const int *local_A)
+    {
+        if (display == NULL)
+            return;
+        if (process_rank == MASTER)
+        {
+            al_clear_to_color(al_map_rgb(0, 0, 0));
+            int salto = 1;
+            int div = 1;
+            int filler = 2;
+            if (size > scala)
+            {
+                salto = (arraySize / scala) + 1;
+                div = size / scala;
+            }
+            else
+                filler = WINDOWSIZE / arraySize;
+
+            unsigned posizioneX = 0;
+            for (int i = 0; i < arraySize; i += salto)
+            {
+
+                int val = WINDOWSIZE - (local_A[i] / div);
+
+                al_draw_line(posizioneX, WINDOWSIZE, posizioneX, val, color, 1.0);
+                posizioneX += filler;
+            }
+            al_flip_display();
+            al_rest(0.2);
+        }
+    }
 
 public:
     bitonic() {}
@@ -153,6 +184,11 @@ void bitonic::start()
 
     for (int dimProcessori = 2, andBit = 2; dimProcessori <= num_processes; dimProcessori = dimProcessori * 2, andBit = andBit << 1)
     {
+        if (showGraphic)
+        {
+            showGraphics(local_list);
+            MPI_Barrier(MPI_COMM_WORLD);
+        }
         if ((process_rank & andBit) == 0)
             bitonicsort_increase(arraySize, local_list, dimProcessori, MPI_COMM_WORLD);
         else
