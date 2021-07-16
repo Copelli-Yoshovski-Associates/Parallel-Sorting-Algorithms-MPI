@@ -16,6 +16,43 @@ int compare(const void *a, const void *b)
 class oddEven
 {
 private:
+    void sorting(int *arr, int n)
+    {
+        bool sorted = false;
+        while (!sorted)
+        {
+
+            if (showGraphic)
+            {
+                //MPI_Barrier(MPI_COMM_WORLD);
+                showGraphics(arr);
+            }
+
+            sorted = true;
+            for (int i = 1; i < n - 1; i += 2)
+            {
+                if (arr[i] > arr[i + 1])
+                {
+                    int temp = arr[i];
+                    arr[i] = arr[i + 1];
+                    arr[i + 1] = temp;
+                    sorted = false;
+                }
+            }
+
+            for (int i = 0; i < n - 1; i += 2)
+            {
+                if (arr[i] > arr[i + 1])
+                {
+                    int temp = arr[i];
+                    arr[i] = arr[i + 1];
+                    arr[i + 1] = temp;
+                    sorted = false;
+                }
+            }
+        }
+    }
+
     void mergeMax(int x[], int tmpMergeListA[], int tmpMergeListB[], int I)
     {
         /*mergesort a and b */
@@ -50,6 +87,7 @@ private:
     }
     void oddEvenTranspose(int x[], int tmpMergeListA[], int tmpMergeListB[], int I, int phase, int evenPartner, int oddPartner, int evenPartnerI, int oddPartnerI, int myrank, int P, MPI_Comm comm)
     {
+
         MPI_Status status;
         if ((phase % 2) == 0)
         {
@@ -107,7 +145,8 @@ void oddEven::start()
     P = num_processes;
     int *x = NULL;
     int *local_A = new int[arraySize];
-    readFromFile(x);
+    if (process_rank == MASTER)
+        readFromFile(x);
 
     MPI_Barrier(MPI_COMM_WORLD);
     if (process_rank == MASTER)
@@ -128,17 +167,21 @@ void oddEven::start()
             evenPartner = -1;
         oddPartner = process_rank - 1;
     }
-
-    qsort(local_A, arraySize, sizeof(int), compare);
-
+    MPI_Barrier(MPI_COMM_WORLD);
+    // qsort(local_A, arraySize, sizeof(int), compare);
+    sorting(local_A, arraySize);
+    MPI_Barrier(MPI_COMM_WORLD);
     tmpMergeListA = new int[arraySize];
     tmpMergeListB = new int[arraySize];
 
     for (int fase = 0; fase < num_processes; fase++)
+        //  for (int fase = 0; fase < arraySize-; fase++)
         oddEvenTranspose(local_A, tmpMergeListA, tmpMergeListB,
                          arraySize, fase, evenPartner, oddPartner,
                          evenPartnerI, oddPartnerI, myrank, P,
                          MPI_COMM_WORLD);
+
+    //qsort(local_A, arraySize, sizeof(int), compare);
 
     MPI_Barrier(MPI_COMM_WORLD);
     if (process_rank == MASTER)

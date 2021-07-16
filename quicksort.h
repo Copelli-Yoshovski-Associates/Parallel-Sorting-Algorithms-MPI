@@ -6,37 +6,7 @@ class quicksort
 {
 private:
 public:
-    void showGraphics(const int *local_A)
-    {
-        if (display == NULL || process_rank != MASTER)
-            return;
-
-        al_clear_to_color(al_map_rgb(0, 0, 0));
-        int salto = 1;
-        int div = 1;
-        int filler = 2;
-        if (size > scala)
-        {
-            salto = (arraySize / scala) + 1;
-            div = size / scala;
-        }
-        else
-            filler = (WINDOWSIZE / arraySize);
-
-        unsigned posizioneX = 0;
-        for (int i = 0; i < arraySize; i += salto)
-        {
-
-            int val = WINDOWSIZE - (local_A[i] / div);
-
-            al_draw_line(posizioneX, WINDOWSIZE, posizioneX, val, color, 1.0);
-            posizioneX += filler;
-        }
-        al_flip_display();
-        al_rest(0.2);
-    }
-
-    quicksort() {}
+    quicksort();
     /*
 	merge(array1, array2, merged_array, size)
 	merge two arrays with the same size into array
@@ -79,6 +49,11 @@ public:
 */
     int partition(int *array, int start, int end)
     {
+        if (showGraphic)
+        {
+            showGraphics(array);
+            //MPI_Barrier(MPI_COMM_WORLD);
+        }
         int pivot = array[end];
         int smallerCount = start;
         for (int j = start; j < end; j++)
@@ -103,13 +78,9 @@ public:
 */
     void quickSort(int *array, int start, int end)
     {
+        // MPI_Barrier(MPI_COMM_WORLD);
         if (start < end)
         {
-            if (showGraphic)
-            {
-                showGraphics(array);
-                MPI_Barrier(MPI_COMM_WORLD);
-            }
             int pivotLoc = partition(array, start, end);
             quickSort(array, start, pivotLoc - 1);
             quickSort(array, pivotLoc + 1, end);
@@ -127,6 +98,10 @@ public:
 
     void start();
 };
+
+quicksort::quicksort(/* args */)
+{
+}
 
 void quicksort::start()
 {
@@ -152,7 +127,7 @@ void quicksort::start()
     MPI_Scatter(A, arraySize, MPI_INT, local_A, arraySize, MPI_INT, 0, MPI_COMM_WORLD);
 
     quickSort(local_A, arraySize); //perform local quicksort
-
+    MPI_Barrier(MPI_COMM_WORLD);
     //merge tree (see details in report)
     int merge_tree_depth = (int)log2(num_processes);
     int my_index = process_rank; //used to determine each process's behavior in merge part

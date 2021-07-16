@@ -14,8 +14,15 @@ int controllaSize(int oldSize)
     * QUINDI, 8 - 5 --> 3 (dobbiamo incrementare la size di 3, per poter 
     * avere numeri suffcienti per poterli distribuire sui vari processori
     */
+    /*
     if (oldSize % num_processes != 0)
         oldSize += num_processes - (oldSize % num_processes);
+    return oldSize;*/
+
+    auto res = (double)log2(oldSize);
+
+    if (res != (int)res)
+        oldSize = pow(2, (int)res + 1);
     return oldSize;
 }
 
@@ -80,13 +87,13 @@ int main(int argc, char *argv[])
     MPI_Barrier(MPI_COMM_WORLD);
     // Initialize Array for Storing Random Numbers
     arraySize = size / num_processes;
+
     b.start();
 
     MPI_Barrier(MPI_COMM_WORLD);
-    q.start();
-
-    MPI_Barrier(MPI_COMM_WORLD);
     o.start();
+    MPI_Barrier(MPI_COMM_WORLD);
+    q.start();
     // Done
 
     if (process_rank == MASTER && display != NULL)

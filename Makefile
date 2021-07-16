@@ -3,6 +3,7 @@ NOME_PROGRAMMA=*
 
 # Compilers and flags
 COMPILER=mpic++
+CFLAGS=-O3 -Ofast
 #CFLAGS=-Wall --pedantic -DSHOW_RESULTS # Uncomment to make the program print its results
 
 # Source files
