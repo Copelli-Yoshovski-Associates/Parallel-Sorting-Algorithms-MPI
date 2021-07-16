@@ -8,37 +8,35 @@ private:
 public:
     void showGraphics(const int *local_A)
     {
-        if (display == NULL)
+        if (display == NULL || process_rank != MASTER)
             return;
-        if (process_rank == MASTER)
+
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        int salto = 1;
+        int div = 1;
+        int filler = 2;
+        if (size > scala)
         {
-            al_clear_to_color(al_map_rgb(0, 0, 0));
-            int salto = 1;
-            int div = 1;
-            int filler = 2;
-            if (size > scala)
-            {
-                salto = (arraySize / scala) + 1;
-                div = size / scala;
-            }
-            else
-                filler = WINDOWSIZE / arraySize;
-
-            unsigned posizioneX = 0;
-            for (int i = 0; i < arraySize; i += salto)
-            {
-
-                int val = WINDOWSIZE - (local_A[i] / div);
-
-                al_draw_line(posizioneX, WINDOWSIZE, posizioneX, val, color, 1.0);
-                posizioneX += filler;
-            }
-            al_flip_display();
-            al_rest(0.2);
+            salto = (arraySize / scala) + 1;
+            div = size / scala;
         }
+        else
+            filler = (WINDOWSIZE / arraySize);
+
+        unsigned posizioneX = 0;
+        for (int i = 0; i < arraySize; i += salto)
+        {
+
+            int val = WINDOWSIZE - (local_A[i] / div);
+
+            al_draw_line(posizioneX, WINDOWSIZE, posizioneX, val, color, 1.0);
+            posizioneX += filler;
+        }
+        al_flip_display();
+        al_rest(0.2);
     }
 
-    quicksort();
+    quicksort() {}
     /*
 	merge(array1, array2, merged_array, size)
 	merge two arrays with the same size into array
@@ -129,10 +127,6 @@ public:
 
     void start();
 };
-
-quicksort::quicksort(/* args */)
-{
-}
 
 void quicksort::start()
 {
