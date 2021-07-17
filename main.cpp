@@ -38,18 +38,12 @@ int controllaProcessori(int nProcessori)
 
     return nProcessori;
 }
-
-///////////////////////////////////////////////////
-// Main
-///////////////////////////////////////////////////
 int main(int argc, char *argv[])
 {
 
     bitonic b;
     quicksort q;
     oddEven o;
-
-    // Initialization, get # of processes & this PID/rank
 
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
@@ -104,7 +98,6 @@ int main(int argc, char *argv[])
     MPI_Barrier(MPI_COMM_WORLD);
 
     o.start();
-    // Done
 
     if (process_rank == MASTER && display != NULL)
         al_destroy_display(display);
