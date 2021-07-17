@@ -2,158 +2,124 @@
 #define BITONIC_H
 #include "settings.h"
 
-int compareBitonic(const void *a, const void *b)
-{
-    if (*(int *)a > *(int *)b)
-        return 1;
-    else if (*(int *)a < *(int *)b)
-        return -1;
-    return 0;
-}
-
 class bitonic
 {
 private:
-    int *Print;
-    unsigned andBit;
     enum
     {
         HIGH = 0,
         LOW
     };
 
-    int *local_list, *temp_list, *merge_list;
+    int *listaLocale, *listaTemp, *sequenzaUnita, *Print;
 
-    void bitonicSortMPI(int *arr, int n)
+    void bitonicSort(int *arr, int n)
     {
-
         int k, j, l, i, temp;
         for (k = 2; k <= n; k *= 2)
-        {
-
             for (j = k / 2; j > 0; j /= 2)
             {
-
                 for (i = 0; i < n; i++)
                 {
                     l = i ^ j;
                     if (l > i)
-                    {
                         if (((i & k) == 0) && (arr[i] > arr[l]) || (((i & k) != 0) && (arr[i] < arr[l])))
                         {
                             temp = arr[i];
                             arr[i] = arr[l];
                             arr[l] = temp;
                         }
-                    }
                 }
-
                 if (showGraphic)
                 {
                     showGraphics(arr);
                     MPI_Barrier(MPI_COMM_WORLD);
                 }
             }
-        }
     }
 
-    void mergeSplit(int arraySize, int *local_list, int which_keys, int partner, MPI_Comm comm)
+    void unisciSequenza(int arraySize, int *listaLocale, int direzione, int partner)
     {
-
         MPI_Status status;
-        temp_list = new int[arraySize]; //(int *)malloc(arraySize * sizeof(int));
-        MPI_Sendrecv(local_list, arraySize, MPI_INT, partner, 0, temp_list, arraySize, MPI_INT, partner, 0, comm, &status);
-        if (which_keys == HIGH)
-            mergeHigh(arraySize, local_list, temp_list);
+        listaTemp = new int[arraySize];
+        MPI_Sendrecv(listaLocale, arraySize, MPI_INT, partner, 0, listaTemp, arraySize, MPI_INT, partner, 0, MPI_COMM_WORLD, &status);
+        if (direzione == HIGH)
+            unisciSequenzaHigh(arraySize, listaLocale, listaTemp);
         else
-            mergeLow(arraySize, local_list, temp_list);
+            unisciSequenzaLow(arraySize, listaLocale, listaTemp);
 
-        //free(temp_list);
-        delete[] temp_list;
+        delete[] listaTemp;
     }
 
-    void bitonicsort_increase(int arraySize, int *local_list, int dimProcessori, MPI_Comm comm)
+    void unisciSequenze(int arraySize, int *lista1, int *lista2, bool low)
     {
-        unsigned eor_bit;
-        int processorDimension, stage, partner;
-
-        processorDimension = log2(dimProcessori);
-        eor_bit = 1 << (processorDimension - 1);
-        for (stage = 0; stage < processorDimension; stage++)
+        int i, idx1 = 0, idx2 = 0;
+        sequenzaUnita = new int[arraySize];
+        if (low)
         {
-            partner = process_rank ^ eor_bit;
-            if (process_rank < partner)
-                mergeSplit(arraySize, local_list, LOW, partner, comm);
-            else
-                mergeSplit(arraySize, local_list, HIGH, partner, comm);
-            eor_bit = eor_bit >> 1;
+            for (i = 0; i < arraySize; i++)
+                if (lista1[idx1] <= lista2[idx2])
+                {
+                    sequenzaUnita[i] = lista1[idx1];
+                    idx1++;
+                }
+                else
+                {
+                    sequenzaUnita[i] = lista2[idx2];
+                    idx2++;
+                }
         }
-    }
-
-    void mergeLow(int arraySize, int *list1, int *list2)
-    {
-        int i;
-        int index1 = 0;
-        int index2 = 0;
-        merge_list = new int[arraySize]; //(int *)malloc(arraySize * sizeof(int));
-        for (i = 0; i < arraySize; i++)
-            if (list1[index1] <= list2[index2])
-            {
-                merge_list[i] = list1[index1];
-                index1++;
-            }
-            else
-            {
-                merge_list[i] = list2[index2];
-                index2++;
-            }
-
-        for (i = 0; i < arraySize; i++)
-            list1[i] = merge_list[i];
-        // free(merge_list);
-        delete[] merge_list;
-    }
-
-    void mergeHigh(int arraySize, int *list1, int *list2)
-    {
-        int i;
-        int index1 = arraySize - 1;
-        int index2 = arraySize - 1;
-        merge_list = new int[arraySize]; //(int *)malloc(arraySize * sizeof(int));
-        for (i = arraySize - 1; i >= 0; i--)
-            if (list1[index1] >= list2[index2])
-            {
-                merge_list[i] = list1[index1];
-                index1--;
-            }
-            else
-            {
-                merge_list[i] = list2[index2];
-                index2--;
-            }
-
-        for (i = 0; i < arraySize; i++)
-            list1[i] = merge_list[i];
-
-        // free(merge_list);
-        delete[] merge_list;
-    }
-
-    void bitonicsort_decrease(int arraySize, int *local_list, int dimProcessori, MPI_Comm comm)
-    {
-        unsigned eor_bit;
-        int processorDimension, stage, partner;
-
-        processorDimension = log2(dimProcessori);
-        eor_bit = 1 << (processorDimension - 1);
-        for (stage = 0; stage < processorDimension; stage++)
+        else
         {
-            partner = process_rank ^ eor_bit;
-            if (process_rank > partner)
-                mergeSplit(arraySize, local_list, LOW, partner, comm);
+            idx1 = arraySize - 1;
+            idx2 = arraySize - 1;
+            for (i = arraySize - 1; i >= 0; i--)
+                if (lista1[idx1] >= lista2[idx2])
+                {
+                    sequenzaUnita[i] = lista1[idx1];
+                    idx1--;
+                }
+                else
+                {
+                    sequenzaUnita[i] = lista2[idx2];
+                    idx2--;
+                }
+        }
+
+        for (i = 0; i < arraySize; i++)
+            lista1[i] = sequenzaUnita[i];
+
+        delete[] sequenzaUnita;
+    }
+
+    //Wrapper per sequenze Low
+    void unisciSequenzaLow(int arraySize, int *lista1, int *lista2) { unisciSequenze(arraySize, lista1, lista2, true); }
+    //Wrapper per sequenze High
+    void unisciSequenzaHigh(int arraySize, int *lista1, int *lista2) { unisciSequenze(arraySize, lista1, lista2, false); }
+
+    //Wrapper per bitonic Sort Crescente
+    void bitonicSortCrescente(int arraySize, int *listaLocale, int dimProcessori) { bitonicSortDirezione(arraySize, listaLocale, dimProcessori, true); }
+    //Wrapper per bitonic Sort Decrescente
+    void bitonicSortDecrescente(int arraySize, int *listaLocale, int dimProcessori) { bitonicSortDirezione(arraySize, listaLocale, dimProcessori, false); }
+
+    void bitonicSortDirezione(int arraySize, int *listaLocale, int dimProcessori, bool cresc)
+    {
+        int partner;
+        int dimensioneProcessore = log2(dimProcessori);
+
+        // shift sinistro di (dimensioneProcessori-1) posizioni
+        unsigned bitwise = 1 << (dimensioneProcessore - 1);
+
+        for (int i = 0; i < dimensioneProcessore; i++)
+        {
+            // XOR Esclusivo (restituisce TRUE se e solo se gli ingressi sono diversi tra di loro)
+            partner = process_rank ^ bitwise;
+            if ((process_rank < partner && cresc) || (process_rank > partner && !cresc))
+                unisciSequenza(arraySize, listaLocale, LOW, partner);
             else
-                mergeSplit(arraySize, local_list, HIGH, partner, comm);
-            eor_bit = eor_bit >> 1;
+                unisciSequenza(arraySize, listaLocale, HIGH, partner);
+            //shift destro
+            bitwise = bitwise >> 1;
         }
     }
 
@@ -166,34 +132,39 @@ void bitonic::start()
 {
     int *array;
 
-    local_list = new int[arraySize]; //(int *)malloc(arraySize * sizeof(int));
+    listaLocale = new int[arraySize];
 
     if (process_rank == MASTER)
-        readFromFile(array);
+        leggiNumeriRandom(array);
 
-    MPI_Scatter(array, arraySize, MPI_INT, local_list, arraySize, MPI_INT, MASTER, MPI_COMM_WORLD);
+    MPI_Scatter(array, arraySize, MPI_INT, listaLocale, arraySize, MPI_INT, MASTER, MPI_COMM_WORLD);
 
     MPI_Barrier(MPI_COMM_WORLD);
     if (DEBUG)
     {
-        printf("Processor %d: ", process_rank);
+        printf("Processore %d: ", process_rank);
         for (int i = 0; i < arraySize; i++)
-            printf("%d ", local_list[i]);
+            printf("%d ", listaLocale[i]);
         printf("\n");
     }
     MPI_Barrier(MPI_COMM_WORLD);
 
     if (process_rank == MASTER)
         timer_start = MPI_Wtime();
-    //   qsort(local_list, arraySize, sizeof(int), compareBitonic);
-    bitonicSortMPI(local_list, arraySize);
 
-    for (int dimProcessori = 2, andBit = 2; dimProcessori <= num_processes; dimProcessori = dimProcessori * 2, andBit = andBit << 1)
+    bitonicSort(listaLocale, arraySize);
+    unsigned andBit = 2;
+    for (int dimProcessori = 2; dimProcessori <= num_processes; dimProcessori *= 2)
     {
+        // bitwise & effettua l'AND logico bit a bit come nell'esempio 2 & 3 --> 010 && 011 = 010
         if ((process_rank & andBit) == 0)
-            bitonicsort_increase(arraySize, local_list, dimProcessori, MPI_COMM_WORLD);
+            bitonicSortCrescente(arraySize, listaLocale, dimProcessori);
         else
-            bitonicsort_decrease(arraySize, local_list, dimProcessori, MPI_COMM_WORLD);
+            bitonicSortDecrescente(arraySize, listaLocale, dimProcessori);
+        MPI_Barrier(MPI_COMM_WORLD);
+
+        //effettua uno shift sinistro di una posizione
+        andBit = andBit << 1;
     }
 
     MPI_Barrier(MPI_COMM_WORLD);
@@ -201,11 +172,11 @@ void bitonic::start()
     if (process_rank == MASTER)
     {
         timer_end = MPI_Wtime();
-        Print = new int[size]; //(int *)malloc(size * sizeof(int));
+        Print = new int[size];
     }
 
     MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Gather(local_list, arraySize, MPI_INT, Print, arraySize, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Gather(listaLocale, arraySize, MPI_INT, Print, arraySize, MPI_INT, MASTER, MPI_COMM_WORLD);
 
     if (process_rank == MASTER)
     {
@@ -215,7 +186,7 @@ void bitonic::start()
         printInfo(1, Print);
         printTime();
         delete[] Print;
-        delete[] local_list;
+        delete[] listaLocale;
     }
 }
 

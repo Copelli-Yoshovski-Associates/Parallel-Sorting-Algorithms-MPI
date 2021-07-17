@@ -115,7 +115,7 @@ void quicksort::start()
         getRandomArray(A, size);
         //printArray(A, size);*/
 
-        readFromFile(A);
+        leggiNumeriRandom(A);
     }
 
     //performance(run time) testing

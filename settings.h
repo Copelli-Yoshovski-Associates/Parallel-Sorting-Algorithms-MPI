@@ -142,7 +142,7 @@ void printArray(int arr[])
     fout.close();
 }
 
-void readFromFile(int *&a)
+void leggiNumeriRandom(int *&a)
 {
     std::ifstream fin("input.txt");
     fin >> size;

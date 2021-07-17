@@ -146,7 +146,7 @@ void oddEven::start()
     int *x = NULL;
     int *local_A = new int[arraySize];
     if (process_rank == MASTER)
-        readFromFile(x);
+        leggiNumeriRandom(x);
 
     MPI_Barrier(MPI_COMM_WORLD);
     if (process_rank == MASTER)
