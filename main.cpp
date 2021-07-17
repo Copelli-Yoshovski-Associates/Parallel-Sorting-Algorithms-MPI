@@ -19,6 +19,9 @@ int controllaSize(int oldSize)
         oldSize += num_processes - (oldSize % num_processes);
     return oldSize;*/
 
+    if (oldSize < num_processes)
+        return num_processes;
+
     auto res = (double)log2(oldSize);
 
     if (res != (int)res)

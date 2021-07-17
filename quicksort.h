@@ -28,7 +28,7 @@ private:
         }
     }
 
-    //Divide l'array in due parti (numeri<=numeroPivot e numeri> numeroPivot)
+    //Divide l'array in due parti (numeri <= numeroPivot e numeri > numeroPivot)
     int partizione(int *array, int inizio, int fine)
     {
         if (showGraphic)
@@ -115,14 +115,13 @@ public:
         if (process_rank == MASTER)
         {
             timer_end = MPI_Wtime();
-            printInfo(2, arrayCorrente);
             if (DEBUG)
                 stampaArrayOrdinato(arrayCorrente);
+            printInfo(2, arrayCorrente);
             printTime();
         }
         MPI_Barrier(MPI_COMM_WORLD);
         delete[] arrayCorrente;
-        //delete[] A;
     }
 };
 #endif

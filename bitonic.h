@@ -128,7 +128,6 @@ public:
     void start()
     {
         int *array = NULL;
-
         listaLocale = new int[arraySize];
 
         if (process_rank == MASTER)
@@ -142,14 +141,6 @@ public:
         MPI_Scatter(array, arraySize, MPI_INT, listaLocale, arraySize, MPI_INT, MASTER, MPI_COMM_WORLD);
 
         MPI_Barrier(MPI_COMM_WORLD);
-        if (DEBUG)
-        {
-            printf("Processore %d: ", process_rank);
-            for (int i = 0; i < arraySize; i++)
-                printf("%d ", listaLocale[i]);
-            printf("\n");
-            MPI_Barrier(MPI_COMM_WORLD);
-        }
 
         bitonicSort(listaLocale, arraySize);
 
@@ -186,8 +177,8 @@ public:
             printInfo(1, Print);
             printTime();
             delete[] Print;
-            delete[] listaLocale;
         }
+        delete[] listaLocale;
     }
 };
 #endif

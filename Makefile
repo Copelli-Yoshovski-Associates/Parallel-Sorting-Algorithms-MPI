@@ -1,17 +1,11 @@
-# Code prefix
-NOME_PROGRAMMA=*
 
-# Compilers and flags
 COMPILER=mpic++
 CFLAGS=-O3 -Ofast
-CFLAGS+=-Wall --pedantic -DSHOW_RESULTS # Uncomment to make the program print its results
+#CFLAGS+=-Wall --pedantic -DSHOW_RESULTS
 
-# Source files
-SRCS=$(NOME_PROGRAMMA).cpp
-
+SRCS=*.cpp
 OUTPUT_PROGRAMMA = sorting.out
-
 ALLEGRO_FLAGS=-lallegro -lallegro_main -lallegro_primitives -lallegro_image
 
 $(OUTPUT_PROGRAMMA).out: $(SRCS)
-	clear && $(COMPILER) $(SRCS) -o $(OUTPUT_PROGRAMMA) $(CFLAGS) $(ALLEGRO_FLAGS)
+	$(COMPILER) $(SRCS) -o $(OUTPUT_PROGRAMMA) $(CFLAGS) $(ALLEGRO_FLAGS)

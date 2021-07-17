@@ -31,51 +31,37 @@ private:
 
     void unisci(int *x, int *listaTemp1, int *listaTemp2, int dim, bool max)
     {
-        int a = 0, b = 0, c = 0;
+        int j = 0, k = 0, z = 0;
         if (max)
         {
-            a = dim - 1, b = dim - 1, c = dim - 1;
-            while (c >= 0)
+            j = dim - 1, k = dim - 1, z = dim - 1;
+            while (z >= 0)
             {
-                if (x[a] >= listaTemp1[b])
-                    listaTemp2[c--] = x[a--];
+                if (x[j] >= listaTemp1[k])
+                    listaTemp2[z--] = x[j--];
                 else
-                    listaTemp2[c--] = listaTemp1[b--];
+                    listaTemp2[z--] = listaTemp1[k--];
             }
         }
         else
         {
-            while (c < dim)
+            while (z < dim)
             {
-                if (x[a] <= listaTemp1[b])
-                    listaTemp2[c++] = x[a++];
+                if (x[j] <= listaTemp1[k])
+                    listaTemp2[z++] = x[j++];
                 else
-                    listaTemp2[c++] = listaTemp1[b++];
+                    listaTemp2[z++] = listaTemp1[k++];
             }
         }
         for (int i = 0; i < dim; i++)
             x[i] = listaTemp2[i];
     }
-    void TrasposizioneOddEven(int *x, int *listaTemp1, int *listaTemp2, int dim, int phase, int vicinoPari, int vicinoDispari)
+    void TrasposizioneOddEven(int *x, int *listaTemp1, int *listaTemp2, int dim, int fase, int vicinoPari, int vicinoDispari)
     {
         MPI_Status status;
-        if ((phase % 2) == 0)
-        {
-            /*even phase */
-            if (vicinoPari >= 0)
-            {
-                MPI_Sendrecv(x, dim, MPI_INT, vicinoPari, 0, listaTemp1, dim, MPI_INT, vicinoPari, 0, MPI_COMM_WORLD, &status);
-                if ((process_rank % 2) == 0)
-                    /*extract highest or lowest I values from merged list*/
-                    unisciMin(x, listaTemp1, listaTemp2, dim);
-                else
-                    unisciMax(x, listaTemp1, listaTemp2, dim);
-            }
-        }
-        else
+        if (fase % 2 != 0)
         {
 
-            /*odd phase */
             if (vicinoDispari >= 0)
             {
                 MPI_Sendrecv(x, dim, MPI_INT, vicinoDispari, 0, listaTemp1, dim, MPI_INT, vicinoDispari, 0, MPI_COMM_WORLD, &status);
@@ -85,16 +71,26 @@ private:
                     unisciMin(x, listaTemp1, listaTemp2, dim);
             }
         }
+        else
+        {
+            if (vicinoPari >= 0)
+            {
+                MPI_Sendrecv(x, dim, MPI_INT, vicinoPari, 0, listaTemp1, dim, MPI_INT, vicinoPari, 0, MPI_COMM_WORLD, &status);
+                if ((process_rank % 2) == 0)
+                    unisciMin(x, listaTemp1, listaTemp2, dim);
+                else
+                    unisciMax(x, listaTemp1, listaTemp2, dim);
+            }
+        }
     }
 
-    int vicinoPari, vicinoDispari;
-    int *listaTemp1, *listaTemp2;
+    int vicinoPari, vicinoDispari, *listaTemp1, *listaTemp2;
 
 public:
     void start()
     {
         int *x = NULL;
-        int *local_A = new int[arraySize];
+        int *arrayLocale = new int[arraySize];
         if (process_rank == MASTER)
         {
             x = globalArray;
@@ -118,15 +114,15 @@ public:
             vicinoDispari = process_rank - 1;
         }
         MPI_Barrier(MPI_COMM_WORLD);
-        MPI_Scatter(x, arraySize, MPI_INT, local_A, arraySize, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Scatter(x, arraySize, MPI_INT, arrayLocale, arraySize, MPI_INT, 0, MPI_COMM_WORLD);
 
-        sorting(local_A, arraySize);
+        sorting(arrayLocale, arraySize);
 
         listaTemp1 = new int[arraySize];
         listaTemp2 = new int[arraySize];
 
         for (int passo = 0; passo < num_processes; passo++)
-            TrasposizioneOddEven(local_A, listaTemp1, listaTemp2, arraySize, passo, vicinoPari, vicinoDispari);
+            TrasposizioneOddEven(arrayLocale, listaTemp1, listaTemp2, arraySize, passo, vicinoPari, vicinoDispari);
 
         MPI_Barrier(MPI_COMM_WORLD);
         if (process_rank == MASTER)
@@ -138,7 +134,7 @@ public:
         MPI_Barrier(MPI_COMM_WORLD);
         if (process_rank == MASTER)
             Print = new int[size];
-        MPI_Gather(local_A, arraySize, MPI_INT, Print, arraySize, MPI_INT, MASTER, MPI_COMM_WORLD);
+        MPI_Gather(arrayLocale, arraySize, MPI_INT, Print, arraySize, MPI_INT, MASTER, MPI_COMM_WORLD);
         MPI_Barrier(MPI_COMM_WORLD);
         if (process_rank == MASTER)
         {
@@ -150,7 +146,7 @@ public:
         }
         MPI_Barrier(MPI_COMM_WORLD);
 
-        delete[] local_A;
+        delete[] arrayLocale;
     }
 };
 #endif
