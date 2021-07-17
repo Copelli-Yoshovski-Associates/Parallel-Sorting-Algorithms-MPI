@@ -54,8 +54,11 @@ int main(int argc, char *argv[])
 
     size = controllaSize(atoi(argv[1]));
 
-    if (size < LIMIT)
-        OUTPUT_NUM = size;
+    if (argv[2] != NULL)
+        showGraphic = (bool)atoi(argv[2]);
+
+    if (size < LIMITE)
+        numeriDaStampare = size;
 
     if (process_rank == MASTER)
     {
@@ -64,6 +67,7 @@ int main(int argc, char *argv[])
             printf("Errore! Si prega di utilizzare un numero di processori che sia potenza di 2...\n");
             MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
         }
+
         globalArray = new int[size];
         printf("Inizio generazione\n");
         srand(time(NULL) + MPI_Wtime() * num_processes);
@@ -73,7 +77,7 @@ int main(int argc, char *argv[])
             globalArray[i] = (rand() % (size - 1)) + 1;
         printf("Fine generazione %f\n", MPI_Wtime() - start);
         start = MPI_Wtime();
-        printArray(globalArray);
+        scriviSuFile(globalArray);
         printf("Fine scrittura su file in %f\n", MPI_Wtime() - start);
         printf("---------------------------------------------------\n");
 

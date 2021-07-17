@@ -23,7 +23,7 @@ private:
                 {
                     l = i ^ j;
                     if (l > i)
-                        if (((i & k) == 0) && (arr[i] > arr[l]) || (((i & k) != 0) && (arr[i] < arr[l])))
+                        if ((((i & k) == 0) && (arr[i] > arr[l])) || (((i & k) != 0) && (arr[i] < arr[l])))
                         {
                             temp = arr[i];
                             arr[i] = arr[l];
@@ -127,7 +127,7 @@ public:
     bitonic() {}
     void start()
     {
-        int *array;
+        int *array = NULL;
 
         listaLocale = new int[arraySize];
 

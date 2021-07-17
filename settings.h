@@ -1,42 +1,37 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#define MASTER 0     // Who should do the final processing
-int OUTPUT_NUM = 10; // Number of elements to display in output
-#include <iostream>  // Printf
-#include <time.h>    // Timer
-#include <math.h>    // Logarithm
-#include <mpi.h>     // MPI Library
+#include <iostream>
+#include <time.h>
+#include <math.h>
+#include <mpi.h>
 #include "allegro5/allegro.h"
 #include "allegro5/allegro_primitives.h"
 #include "allegro5/allegro_image.h"
-//#include <windows.h>
-#include <stdio.h>
 
 #include <fstream>
 #include <ios>
-#define LIMIT 10
+#define LIMITE 10
 #define DEBUG 0
-
+#define MASTER 0
 #define WINDOWSIZE 600
+
+// Grafica
 ALLEGRO_DISPLAY *display = NULL;
 ALLEGRO_COLOR color = al_map_rgb(255, 0, 0);
 const int scala = WINDOWSIZE / 2;
-const char *nomeFile = "Timing.txt";
 bool showGraphic = false;
 
-// Globals
-double timer_start;
-double timer_end;
-int process_rank;
-int num_processes;
+// Output
+const char *nomeFile = "Timing.txt";
+const char *inputFile = "input.txt";
+int numeriDaStampare = 10;
 
+// Variabili MPI
+double timer_start, timer_end;
+int process_rank, num_processes;
 int *globalArray = NULL;
-int size;
-int arraySize;
-int defaultSize = 100;
-
-double global_elapsed_time;
+int size, arraySize, defaultSize = 100;
 
 void printTime()
 {
@@ -68,19 +63,14 @@ void printInfo(int sortType, int *Print)
 {
 
     std::string sortName = determineSort(sortType);
-    printf("Displaying sorted array (only %d elements for quick verification of ", OUTPUT_NUM);
-    printf(determineSort(sortType).append(")\n").c_str());
+    printf("Visualizzo Array Ordinato (solo %d elementi per una verifica veloce del ", numeriDaStampare);
+    printf("%s)\n", sortName.c_str());
 
-    // Print Sorting Results
     for (int i = 0; i < size; i++)
-        if ((i % (size / OUTPUT_NUM)) == 0)
+        if ((i % (size / numeriDaStampare)) == 0)
             printf("%d ", Print[i]);
 
     printf("\n");
-
-    /*   FILE *f = fopen(nomeFile, "a");
-    fprintf(f, sortName.c_str());
-    fprintf(f, ": %d %d %f\n", size, num_processes, timer_end - timer_start);*/
 
     std::ofstream fout(nomeFile, std::ios::app);
     fout << sortName << ": " << size << " " << num_processes << " " << (timer_end - timer_start) << std::endl;
@@ -132,9 +122,9 @@ void showGraphics(const int *local_A)
     }
 }
 
-void printArray(int arr[])
+void scriviSuFile(int arr[])
 {
-    std::ofstream fout("input.txt");
+    std::ofstream fout(inputFile);
     fout << size << std::endl;
     for (int i = 0; i < size; i++)
         fout << arr[i] << " ";
@@ -144,7 +134,7 @@ void printArray(int arr[])
 
 void leggiNumeriRandom(int *&a)
 {
-    std::ifstream fin("input.txt");
+    std::ifstream fin(inputFile);
     fin >> size;
 
     a = new int[size];
