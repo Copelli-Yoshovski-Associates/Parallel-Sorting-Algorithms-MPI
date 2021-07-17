@@ -64,11 +64,11 @@ int main(int argc, char *argv[])
             printf("Errore! Si prega di utilizzare un numero di processori che sia potenza di 2...\n");
             MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
         }
-        int *globalArray = new int[size];
-        srand(time(NULL)); // Needed for rand()
+        globalArray = new int[size];
+        printf("Inizio generazione\n");
+        srand(time(NULL) + MPI_Wtime() * num_processes);
         double start = MPI_Wtime();
-        // Generate Random Numbers for Sorting (within each process)
-        // Less overhead without MASTER sending random numbers to each slave
+
         for (int i = 0; i < size; i++)
             globalArray[i] = (rand() % (size - 1)) + 1;
         printf("Fine generazione %f\n", MPI_Wtime() - start);
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
         printArray(globalArray);
         printf("Fine scrittura su file in %f\n", MPI_Wtime() - start);
         printf("---------------------------------------------------\n");
-        delete[] globalArray;
+
         if (showGraphic)
         {
             al_init();
@@ -85,15 +85,18 @@ int main(int argc, char *argv[])
         }
     }
     MPI_Barrier(MPI_COMM_WORLD);
-    // Initialize Array for Storing Random Numbers
+
     arraySize = size / num_processes;
 
     b.start();
 
     MPI_Barrier(MPI_COMM_WORLD);
-    o.start();
-    MPI_Barrier(MPI_COMM_WORLD);
+
     q.start();
+
+    MPI_Barrier(MPI_COMM_WORLD);
+
+    o.start();
     // Done
 
     if (process_rank == MASTER && display != NULL)
@@ -101,5 +104,6 @@ int main(int argc, char *argv[])
 
     MPI_Barrier(MPI_COMM_WORLD);
     MPI_Finalize();
+    delete[] globalArray;
     return 0;
 }

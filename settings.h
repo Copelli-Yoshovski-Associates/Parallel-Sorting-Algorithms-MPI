@@ -31,7 +31,7 @@ double timer_end;
 int process_rank;
 int num_processes;
 
-//int *globalArray;
+int *globalArray = NULL;
 int size;
 int arraySize;
 int defaultSize = 100;

@@ -125,69 +125,69 @@ private:
 
 public:
     bitonic() {}
-    void start();
-};
-
-void bitonic::start()
-{
-    int *array;
-
-    listaLocale = new int[arraySize];
-
-    if (process_rank == MASTER)
-        leggiNumeriRandom(array);
-
-    MPI_Scatter(array, arraySize, MPI_INT, listaLocale, arraySize, MPI_INT, MASTER, MPI_COMM_WORLD);
-
-    MPI_Barrier(MPI_COMM_WORLD);
-    if (DEBUG)
+    void start()
     {
-        printf("Processore %d: ", process_rank);
-        for (int i = 0; i < arraySize; i++)
-            printf("%d ", listaLocale[i]);
-        printf("\n");
-    }
-    MPI_Barrier(MPI_COMM_WORLD);
+        int *array;
 
-    if (process_rank == MASTER)
-        timer_start = MPI_Wtime();
+        listaLocale = new int[arraySize];
 
-    bitonicSort(listaLocale, arraySize);
-    unsigned andBit = 2;
-    for (int dimProcessori = 2; dimProcessori <= num_processes; dimProcessori *= 2)
-    {
-        // bitwise & effettua l'AND logico bit a bit come nell'esempio 2 & 3 --> 010 && 011 = 010
-        if ((process_rank & andBit) == 0)
-            bitonicSortCrescente(arraySize, listaLocale, dimProcessori);
-        else
-            bitonicSortDecrescente(arraySize, listaLocale, dimProcessori);
+        if (process_rank == MASTER)
+        {
+            array = globalArray;
+            //leggiNumeriRandom(array);
+            timer_start = MPI_Wtime();
+        }
         MPI_Barrier(MPI_COMM_WORLD);
 
-        //effettua uno shift sinistro di una posizione
-        andBit = andBit << 1;
-    }
+        MPI_Scatter(array, arraySize, MPI_INT, listaLocale, arraySize, MPI_INT, MASTER, MPI_COMM_WORLD);
 
-    MPI_Barrier(MPI_COMM_WORLD);
-
-    if (process_rank == MASTER)
-    {
-        timer_end = MPI_Wtime();
-        Print = new int[size];
-    }
-
-    MPI_Barrier(MPI_COMM_WORLD);
-    MPI_Gather(listaLocale, arraySize, MPI_INT, Print, arraySize, MPI_INT, MASTER, MPI_COMM_WORLD);
-
-    if (process_rank == MASTER)
-    {
+        MPI_Barrier(MPI_COMM_WORLD);
         if (DEBUG)
-            stampaArrayOrdinato(Print);
+        {
+            printf("Processore %d: ", process_rank);
+            for (int i = 0; i < arraySize; i++)
+                printf("%d ", listaLocale[i]);
+            printf("\n");
+            MPI_Barrier(MPI_COMM_WORLD);
+        }
 
-        printInfo(1, Print);
-        printTime();
-        delete[] Print;
-        delete[] listaLocale;
+        bitonicSort(listaLocale, arraySize);
+
+        unsigned andBit = 2;
+        for (int dimProcessori = 2; dimProcessori <= num_processes; dimProcessori *= 2)
+        {
+            // bitwise & effettua l'AND logico bit a bit come nell'esempio 2 & 3 --> 010 && 011 = 010
+            if ((process_rank & andBit) == 0)
+                bitonicSortCrescente(arraySize, listaLocale, dimProcessori);
+            else
+                bitonicSortDecrescente(arraySize, listaLocale, dimProcessori);
+            MPI_Barrier(MPI_COMM_WORLD);
+
+            //effettua uno shift sinistro di una posizione
+            andBit = andBit << 1;
+        }
+
+        MPI_Barrier(MPI_COMM_WORLD);
+
+        if (process_rank == MASTER)
+        {
+            timer_end = MPI_Wtime();
+            Print = new int[size];
+        }
+
+        MPI_Barrier(MPI_COMM_WORLD);
+        MPI_Gather(listaLocale, arraySize, MPI_INT, Print, arraySize, MPI_INT, MASTER, MPI_COMM_WORLD);
+
+        if (process_rank == MASTER)
+        {
+            if (DEBUG)
+                stampaArrayOrdinato(Print);
+
+            printInfo(1, Print);
+            printTime();
+            delete[] Print;
+            delete[] listaLocale;
+        }
     }
-}
-
+};
 #endif
