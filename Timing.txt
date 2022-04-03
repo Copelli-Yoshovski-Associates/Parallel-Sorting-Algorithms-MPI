@@ -1,0 +1,9 @@
+Bitonic sort: 1024 4 7.4243
+Bitonic sort: 16384 4 15.9338
+Bitonic sort: 16777216 4 7.75218
+Quick sort: 16777216 4 1.14925
+Bitonic sort: 16384 4 0.0993788
+Quick sort: 16384 4 0.0479381
+Odd Even Transposition sort: 16384 4 0.0516403
+Bitonic sort: 268435456 8 154.597
+Quick sort: 268435456 8 46.368
