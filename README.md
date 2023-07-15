@@ -5,8 +5,8 @@ Parallel execution of three sorting algorithms implemented with MPI: Bitonic Sor
 This project was developed for the course of Parallel Algorithms and Distributed Systems (University of Calabria) in July 2021
 
 ## Contributors
-> [Francesco Copelli](https://www.linkedin.com/in/francesco-copelli/) (Back-End and EmbASP Integration) <br>
-> [Stefan Yoshovski](https://www.linkedin.com/in/stefan-yoshovski/) (UI and ASP Encode)
+> [Francesco Copelli](https://www.linkedin.com/in/francesco-copelli/)<br>
+> [Stefan Yoshovski](https://www.linkedin.com/in/stefan-yoshovski/) 
 
 ## Table of Contents
 - [Used Technologies](#used-technologies)
